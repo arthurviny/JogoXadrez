@@ -60,6 +60,7 @@ public class Tabuleiro {
     }
 
     public boolean check(int linha, int coluna, String corAtacante) {
+        String corDefensora = corAtacante == "branco" ? "preto" : "branco";
 
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -96,6 +97,18 @@ public class Tabuleiro {
             }
         }
         return null; // Não deveria acontecer em um jogo normal.
+    }
+
+    public int[] encontrarHeroi(String corDoHeroi) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Peca peca = getPeca(i, j);
+                if (peca != null && peca.getNomePeca().equals("Heroi") && peca.getCor().equals(corDoHeroi)) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
     }
 
     // Metodo para criar uma cópia exata do tabuleiro atual.

@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -17,13 +18,33 @@ public class Menu implements Initializable {
 
     @FXML
     private ImageView logoImage;
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private StackPane rootPane;
 
     @FXML
     private Button playButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Carrega a logo
+        try {
+            Image background = new Image(
+                    getClass().getResourceAsStream(
+                            "/images/imagemFundoXadresDOIS.png"
+                    )
+            );
+            backgroundImage.setImage(background);
+            // Configurar para preencher o ImageView
+            backgroundImage.fitWidthProperty().bind(rootPane.widthProperty());
+            backgroundImage.fitHeightProperty().bind(rootPane.heightProperty());
+
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar a imagem de fundo: " + e.getMessage());
+            // Opcional: definir um fundo de cor sólida se a imagem falhar
+            // backgroundImage.setStyle("-fx-background-color: #333333;");
+        }
+
         Image logo = new Image(getClass().getResourceAsStream("/images/branco/Rainha.png"));
         logoImage.setImage(logo);
 

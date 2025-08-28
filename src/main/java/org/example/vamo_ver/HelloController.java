@@ -280,6 +280,7 @@ public class HelloController implements Initializable {
             // A validação completa agora está centralizada no isMovimentoLegal
             if (isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
 
+                String corOponente = turnoAtual == "branco" ? "preto" : "branco";
                 Peca pecaNoDestino = jogoDeXadrez.getPeca(linha, coluna);
                 boolean foiCaptura = pecaNoDestino != null;
 
@@ -304,11 +305,6 @@ public class HelloController implements Initializable {
                     } else {
                         pecasTransformarPretas.remove(modoAtualBobo);
                         jogoDeXadrez.setModoDoBobo(linha, coluna, "nulo");
-                    }
-
-
-                    for(String string : copiaPecasBobo) {
-                        System.out.println(string);
                     }
 
                     if (pecasTransformarBrancas.isEmpty()) {
@@ -336,13 +332,9 @@ public class HelloController implements Initializable {
     }
 
     public void handleSecondaryClick(int linha, int coluna) {
-
         if (pecaSelecionada instanceof BoboDaCorte) {
-
             modularBobo(pecaSelecionada, linha, coluna);
-
         }
-
     }
 
     // --- MÉTODOS AUXILIARES DE LÓGICA DE JOGO ---
@@ -410,8 +402,31 @@ public class HelloController implements Initializable {
         }
     }
 
+    private void ativarOuDesativarModoFuria() {
+        int[] posRei = jogoDeXadrez.encontrarRei(turnoAtual);
+        if (posRei == null) return;
+
+        String corOponente = turnoAtual.equals("branco") ? "preto" : "branco";
+
+        int[] posHeroi = jogoDeXadrez.encontrarHeroi(turnoAtual);
+        if (posHeroi == null) return;
+
+        // Usa a função check que já considera bloqueios
+        boolean reiEmCheck = jogoDeXadrez.check(posRei[0], posRei[1], corOponente);
+
+        jogoDeXadrez.setFuriaHeroi(posHeroi[0], posHeroi[1], reiEmCheck);
+
+        if (reiEmCheck) {
+            System.out.println("Rei do turno atual está em check, modo fúria do herói ativado.");
+        } else {
+            System.out.println("Rei do turno atual não está em check, modo fúria do herói desativado.");
+        }
+    }
+
+
     private void trocarTurno() {
         turnoAtual = turnoAtual.equals("branco") ? "preto" : "branco";
+        ativarOuDesativarModoFuria();
         atualizarTituloDaJanela();
         verificarFimDeJogo();
     }
@@ -531,7 +546,29 @@ public class HelloController implements Initializable {
     }
 
     private void mostrarDialogoDoLadrao(int linhaInicial, int colunaInicial, int linha, int coluna) {
-        // Este método está correto, não precisa mudar
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Habilidade do Ladrão!");
+        alert.setHeaderText("O Ladrão capturou uma peça.");
+        alert.setContentText("Deseja usar a habilidade para voltar à casa original?");
+
+        // Estiliza a caixa de diálogo, se o arquivo CSS existir
+        try {
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().add(getClass().getResource("ladrao-dialog.css").toExternalForm());
+        } catch (Exception e) {
+            System.out.println("Arquivo CSS do Ladrão não encontrado, usando estilo padrão.");
+        }
+
+        ButtonType botaoSim = new ButtonType("Sim, recuar!");
+        ButtonType botaoNao = new ButtonType("Não, ficar.");
+        alert.getButtonTypes().setAll(botaoSim, botaoNao);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == botaoSim) {
+            // Se o jogador escolheu SIM, move a peça de volta
+            jogoDeXadrez.moverPeca(linha, coluna, linhaInicial, colunaInicial);
+            atualizarTabuleiro(); // Atualiza o visual de novo para mostrar o recuo
+        }
     }
 
     private void atualizarTituloDaJanela() {
