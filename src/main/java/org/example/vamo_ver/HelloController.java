@@ -1,7 +1,17 @@
 package org.example.vamo_ver;
 
 // Imports necessários
-import game.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Optional;
+
+import game.BoboDaCorte;
+import game.Ladrao;
+import game.Peao;
+import game.Peca;
+import game.Tabuleiro;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -18,12 +28,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
 
@@ -574,8 +578,8 @@ public class HelloController implements Initializable {
     private void atualizarTituloDaJanela() {
         if (tabuleiroGrid.getScene() == null || tabuleiroGrid.getScene().getWindow() == null) return;
         Stage stage = (Stage) tabuleiroGrid.getScene().getWindow();
-        String corCapitalizada = turnoAtual.substring(0, 1).toUpperCase() + turnoAtual.substring(1);
-        stage.setTitle("XXXadrez! - Vez das " + corCapitalizada + "s");
+        String corCapitalizada = turnoAtual.equals("branco") ? "Brancas " : "Pretas ";
+        stage.setTitle("XXXadrez! - Vez das " + corCapitalizada);
     }
 
     public void deselecionarPeca() {
