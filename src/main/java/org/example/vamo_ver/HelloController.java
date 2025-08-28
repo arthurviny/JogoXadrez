@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Optional;
 
 import game.BoboDaCorte;
 import game.Ladrao;
@@ -17,6 +18,8 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -532,7 +535,29 @@ public class HelloController implements Initializable {
     }
 
     private void mostrarDialogoDoLadrao(int linhaInicial, int colunaInicial, int linha, int coluna) {
-        // Este método está correto, não precisa mudar
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Habilidade do Ladrão!");
+        alert.setHeaderText("O Ladrão capturou uma peça.");
+        alert.setContentText("Deseja usar a habilidade para voltar à casa original?");
+
+        // Estiliza a caixa de diálogo, se o arquivo CSS existir
+        try {
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().add(getClass().getResource("ladrao-dialog.css").toExternalForm());
+        } catch (Exception e) {
+            System.out.println("Arquivo CSS do Ladrão não encontrado, usando estilo padrão.");
+        }
+
+        ButtonType botaoSim = new ButtonType("Sim, recuar!");
+        ButtonType botaoNao = new ButtonType("Não, ficar.");
+        alert.getButtonTypes().setAll(botaoSim, botaoNao);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == botaoSim) {
+            // Se o jogador escolheu SIM, move a peça de volta
+            jogoDeXadrez.moverPeca(linha, coluna, linhaInicial, colunaInicial);
+            atualizarTabuleiro(); // Atualiza o visual de novo para mostrar o recuo
+        }
     }
 
     private void atualizarTituloDaJanela() {
