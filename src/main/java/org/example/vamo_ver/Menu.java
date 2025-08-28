@@ -31,7 +31,7 @@ public class Menu implements Initializable {
         try {
             Image background = new Image(
                     getClass().getResourceAsStream(
-                            "/images/imagemFundoXadresDOIS.png"
+                            "/images/ImagemFundoXadrezDois.png"
                     )
             );
             backgroundImage.setImage(background);
@@ -45,7 +45,7 @@ public class Menu implements Initializable {
             // backgroundImage.setStyle("-fx-background-color: #333333;");
         }
 
-        Image logo = new Image(getClass().getResourceAsStream("/images/branco/Rainha.png"));
+        Image logo = new Image(getClass().getResourceAsStream("/images/logoBobo.png"));
         logoImage.setImage(logo);
 
         // Ação do botão Play
@@ -59,7 +59,7 @@ public class Menu implements Initializable {
 
             Stage stage = (Stage) playButton.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Xadrez Fantástico");
+            stage.setTitle("Xadrez2");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

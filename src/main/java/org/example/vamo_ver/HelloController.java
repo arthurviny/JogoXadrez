@@ -438,75 +438,39 @@ public class HelloController implements Initializable {
     // --- MÉTODOS DE UI E VISUAIS ---
 
     public void desenharTabuleiro() {
-
         tabuleiroGrid.getChildren().clear();
-
-
-
         for (int row = 0; row < 8; row++) {
-
             for (int col = 0; col < 8; col++) {
-
                 StackPane cell = new StackPane();
-
-
-
                 if ((row + col) % 2 == 0) {
-
                     cell.setStyle("-fx-background-color: #eeeed2;");
-
                 } else {
-
                     cell.setStyle("-fx-background-color: #673166;");
-
                 }
 
-
-
                 final int linha = row;
-
                 final int coluna = col;
 
-
-
                 Peca peca = jogoDeXadrez.getPeca(row, col);
-
                 cell.setOnMouseClicked(event -> {
-
                     if (event.getButton() == MouseButton.PRIMARY) {
-
                         handlePrimaryClick(cell, linha, coluna);
-
                     } else if (event.getButton() == MouseButton.SECONDARY) {
-
                         handleSecondaryClick(linha, coluna);
-
                     }
-
                 });
 
-
-
                 if (peca != null) {
-
                     Image image = new Image(
-
                             getClass().getResourceAsStream(
-
                                     "/images/" + peca.getCor() + "/" + peca.getNomePeca() + ".png"
-
                             )
-
                     );
 
                     ImageView imageView = new ImageView(image);
-
                     imageView.setFitWidth(50);
-
                     imageView.setFitHeight(50);
-
                     cell.getChildren().add(imageView);
-
                 }
                 tabuleiroGrid.add(cell, col, row);
             }
@@ -518,19 +482,12 @@ public class HelloController implements Initializable {
     }
 
     private Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
-
         for (Node node : gridPane.getChildren()) {
-
             if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
-
                 return node;
-
             }
-
         }
-
         return null;
-
     }
 
     public void mostrarMovimentosValidos(int linhaOrigem, int colunaOrigem) {

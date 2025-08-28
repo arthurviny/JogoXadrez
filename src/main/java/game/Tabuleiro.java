@@ -103,7 +103,7 @@ public class Tabuleiro {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Peca peca = getPeca(i, j);
-                if (peca != null && peca.getNomePeca().equals("Heroi") && peca.getCor().equals(corDoHeroi)) {
+                if (peca != null && peca.getNomePeca().equals("Principe") && peca.getCor().equals(corDoHeroi)) {
                     return new int[]{i, j};
                 }
             }
