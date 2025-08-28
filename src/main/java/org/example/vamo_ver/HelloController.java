@@ -346,7 +346,7 @@ public class HelloController implements Initializable {
     }
 
     // --- MÉTODOS AUXILIARES DE LÓGICA DE JOGO ---
-
+    // Testando commit
     private boolean isMovimentoLegal(int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
         // Passo 1: Verifica se o movimento é geometricamente válido para a peça.
         if (!pecaSelecionada.isMovimentoValido(jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal)) {
