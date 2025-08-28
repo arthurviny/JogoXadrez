@@ -1,0 +1,548 @@
+package org.example.vamo_ver;
+
+// Imports necessários
+import game.*;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+public class HelloController implements Initializable {
+
+    @FXML
+    private GridPane tabuleiroGrid;
+    private Tabuleiro jogoDeXadrez;
+    private Peca pecaSelecionada = null;
+    private StackPane cellSelecionada = null;
+    private String turnoAtual = "branco";
+    private boolean jogoAcabou = false;
+    List<String> pecasTransformarPretas = new ArrayList<>();
+    List<String> pecasTransformarBrancas = new ArrayList<>();
+    List<String> todasPecasMenosReiPeao = new ArrayList<>();
+
+    List<String> copiaPecasBobo = new ArrayList<>();
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        jogoDeXadrez = new Tabuleiro();
+
+        pecasTransformarBrancas = jogoDeXadrez.getPecasNoTabuleiro();
+        pecasTransformarPretas.addAll(pecasTransformarBrancas);
+        pecasTransformarPretas.remove("BoboDaCorte");
+        pecasTransformarBrancas.remove("BoboDaCorte");
+        copiaPecasBobo.addAll(pecasTransformarBrancas);
+        todasPecasMenosReiPeao.addAll(pecasTransformarBrancas);
+        todasPecasMenosReiPeao.remove("Peao");
+        todasPecasMenosReiPeao.remove("Rei");
+
+        desenharTabuleiro();
+
+        // Listener para atualizar o título da janela
+        tabuleiroGrid.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.windowProperty().addListener((obs2, oldWindow, newWindow) -> {
+                    if (newWindow != null) {
+                        atualizarTituloDaJanela();
+                    }
+                });
+            }
+        });
+    }
+
+    private void modularPromocao(Peca peao, int linha, int coluna) {
+        final Popup popup = new Popup();
+        GridPane menuDePecas = new GridPane();
+        menuDePecas.setStyle("-fx-background-color: #333333; -fx-padding: 5; -fx-border-color: #666666; -fx-border-width: 2;");
+        menuDePecas.setHgap(5);
+        menuDePecas.setVgap(5);
+
+        for (int i = 0; i < 4; i++) {
+            menuDePecas.getColumnConstraints().add(new javafx.scene.layout.ColumnConstraints(30, 30, 30, Priority.SOMETIMES, HPos.CENTER, true));
+        }
+
+        for (int i = 0; i < 2; i++) {
+            menuDePecas.getRowConstraints().add(new javafx.scene.layout.RowConstraints(30, 30, 30, Priority.SOMETIMES, VPos.CENTER, true));
+        }
+
+        int contador = 0;
+        if (peao.getCor().equals("branco")) {
+            for (String pecaPromover : pecasTransformarBrancas) {
+                Image image = new Image(
+                        getClass().getResourceAsStream(
+                                "/images/" + peao.getCor() + "/" + pecaPromover + ".png"
+                        )
+                );
+
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(30);
+                imageView.setFitHeight(30);
+                imageView.setOnMouseClicked(event -> {
+
+                    Peca pecaEscolhidaPromocao = jogoDeXadrez.criarPeca(pecaPromover, peao.getCor());
+                    jogoDeXadrez.setPeca(linha, coluna, pecaEscolhidaPromocao);
+                    atualizarTabuleiro();
+                    System.out.println("Peao promovido a: " + pecaPromover);
+
+                    popup.hide();
+
+                });
+
+                int menuCol = contador % 4; // Colunas: 0, 1, 2, 3
+                int menuRow = contador / 4; // Linhas: 0, 0, 0, 0, 1, 1, 1, 1
+
+                menuDePecas.add(imageView, menuCol, menuRow);
+                contador++;
+            }
+
+            popup.getContent().add(menuDePecas);
+            Node node = getNodeByRowColumnIndex(linha, coluna, tabuleiroGrid);
+            if (node != null) {
+
+                double screenX = node.localToScreen(0, 0).getX();
+                double screenY = node.localToScreen(0, 0).getY();
+
+                popup.show(tabuleiroGrid, screenX + 50, screenY);
+            }
+        } else {
+            for (String pecaPromover : todasPecasMenosReiPeao) {
+                Image image = new Image(
+                        getClass().getResourceAsStream(
+                                "/images/" + peao.getCor() + "/" + pecaPromover + ".png"
+                        )
+                );
+
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(30);
+                imageView.setFitHeight(30);
+                imageView.setOnMouseClicked(event -> {
+
+                    // LOGICA DE PROMOCAO AQUI
+                    Peca pecaEscolhidaPromocao = jogoDeXadrez.criarPeca(pecaPromover, peao.getCor());
+                    jogoDeXadrez.setPeca(linha, coluna, pecaEscolhidaPromocao);
+                    atualizarTabuleiro();
+                    System.out.println("Peao promovido a: " + pecaPromover);
+                    popup.hide();
+
+                });
+
+                int menuCol = contador % 4; // Colunas: 0, 1, 2, 3
+                int menuRow = contador / 4; // Linhas: 0, 0, 0, 0, 1, 1, 1, 1
+
+                menuDePecas.add(imageView, menuCol, menuRow);
+                contador++;
+            }
+
+            popup.getContent().add(menuDePecas);
+            Node node = getNodeByRowColumnIndex(linha, coluna, tabuleiroGrid);
+            if (node != null) {
+
+                double screenX = node.localToScreen(0, 0).getX();
+                double screenY = node.localToScreen(0, 0).getY();
+
+                popup.show(tabuleiroGrid, screenX + 50, screenY);
+            }
+        }
+    }
+
+    private void modularBobo(Peca bobo, int linha, int coluna) {
+        final Popup popup = new Popup();
+        GridPane menuDeModos = new GridPane();
+        menuDeModos.setStyle("-fx-background-color: #333333; -fx-padding: 5; -fx-border-color: #666666; -fx-border-width: 2;");
+        menuDeModos.setHgap(5);
+        menuDeModos.setVgap(5);
+
+        for (int i = 0; i < 4; i++) {
+            menuDeModos.getColumnConstraints().add(new javafx.scene.layout.ColumnConstraints(30, 30, 30, Priority.SOMETIMES, HPos.CENTER, true));
+        }
+
+        for (int i = 0; i < 2; i++) {
+            menuDeModos.getRowConstraints().add(new javafx.scene.layout.RowConstraints(30, 30, 30, Priority.SOMETIMES, VPos.CENTER, true));
+        }
+
+        int contador = 0;
+        if (bobo.getCor().equals("branco")) {
+            for (String modo : pecasTransformarBrancas) {
+                Image image = new Image(
+                        getClass().getResourceAsStream(
+                                "/images/" + bobo.getCor() + "/" + modo + ".png"
+                        )
+                );
+
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(30);
+                imageView.setFitHeight(30);
+                imageView.setOnMouseClicked(event -> {
+
+                    // Lógica para mudar o modo do bobo
+                    jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
+                    // Mostrar os movimentos válidos logo após escolher o modo do bobo
+                    mostrarMovimentosValidos(linha, coluna);
+                    System.out.println("Modo do Bobo da Corte alterado para: " + modo);
+
+                    popup.hide();
+
+                });
+
+                int menuCol = contador % 4; // Colunas: 0, 1, 2, 3
+                int menuRow = contador / 4; // Linhas: 0, 0, 0, 0, 1, 1, 1, 1
+
+                menuDeModos.add(imageView, menuCol, menuRow);
+                contador++;
+            }
+
+            popup.getContent().add(menuDeModos);
+            Node node = getNodeByRowColumnIndex(linha, coluna, tabuleiroGrid);
+            if (node != null) {
+
+                double screenX = node.localToScreen(0, 0).getX();
+                double screenY = node.localToScreen(0, 0).getY();
+
+                popup.show(tabuleiroGrid, screenX + 50, screenY);
+            }
+        } else {
+            for (String modo : pecasTransformarPretas) {
+                Image image = new Image(
+                        getClass().getResourceAsStream(
+                                "/images/" + bobo.getCor() + "/" + modo + ".png"
+                        )
+                );
+
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(30);
+                imageView.setFitHeight(30);
+                imageView.setOnMouseClicked(event -> {
+
+// Lógica para mudar o modo do Bobo da Corte
+                    jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
+                    mostrarMovimentosValidos(linha, coluna);
+                    System.out.println("Modo do Bobo da Corte alterado para: " + modo);
+
+                    popup.hide();
+
+                });
+
+                int menuCol = contador % 4; // Colunas: 0, 1, 2, 3
+                int menuRow = contador / 4; // Linhas: 0, 0, 0, 0, 1, 1, 1, 1
+
+                menuDeModos.add(imageView, menuCol, menuRow);
+                contador++;
+            }
+
+            popup.getContent().add(menuDeModos);
+            Node node = getNodeByRowColumnIndex(linha, coluna, tabuleiroGrid);
+            if (node != null) {
+
+                double screenX = node.localToScreen(0, 0).getX();
+                double screenY = node.localToScreen(0, 0).getY();
+
+                popup.show(tabuleiroGrid, screenX + 50, screenY);
+            }
+        }
+    }
+
+
+    public void handlePrimaryClick(StackPane cell, int linha, int coluna) {
+        if (jogoAcabou) return; // Se o jogo acabou, não faz nada
+
+        // Lógica de seleção de peça
+        if (pecaSelecionada == null) {
+            Peca pecaClicada = jogoDeXadrez.getPeca(linha, coluna);
+            if (pecaClicada != null && pecaClicada.getCor().equals(turnoAtual)) {
+                pecaSelecionada = pecaClicada;
+                cellSelecionada = cell;
+                cell.setStyle(cell.getStyle() + "; -fx-border-color: yellow; -fx-border-width: 2;");
+                mostrarMovimentosValidos(linha, coluna);
+            }
+        }
+        // Lógica de tentativa de movimento
+        else {
+            int linhaInicial = GridPane.getRowIndex(cellSelecionada);
+            int colunaInicial = GridPane.getColumnIndex(cellSelecionada);
+
+            // A validação completa agora está centralizada no isMovimentoLegal
+            if (isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
+
+                Peca pecaNoDestino = jogoDeXadrez.getPeca(linha, coluna);
+                boolean foiCaptura = pecaNoDestino != null;
+
+                jogoDeXadrez.moverPeca(linhaInicial, colunaInicial, linha, coluna);
+
+                Peca peca = jogoDeXadrez.getPeca(linha, coluna);
+
+                if (peca instanceof Peao) {
+                    if (peca.getCor().equals("branco") && linha == 0) {
+                        modularPromocao(peca, linha, coluna);
+                    } else if (peca.getCor().equals("preto") && linha == 7) {
+                        modularPromocao(peca, linha, coluna);
+                    }
+                }
+
+                if (peca instanceof BoboDaCorte) {
+                    BoboDaCorte bobo = (BoboDaCorte) peca;
+                    String modoAtualBobo = bobo.getModoAtual();
+                    if (peca.getCor().equals("branco")) {
+                        pecasTransformarBrancas.remove(modoAtualBobo);
+                        jogoDeXadrez.setModoDoBobo(linha, coluna, "nulo");
+                    } else {
+                        pecasTransformarPretas.remove(modoAtualBobo);
+                        jogoDeXadrez.setModoDoBobo(linha, coluna, "nulo");
+                    }
+
+
+                    for(String string : copiaPecasBobo) {
+                        System.out.println(string);
+                    }
+
+                    if (pecasTransformarBrancas.isEmpty()) {
+                        pecasTransformarBrancas.addAll(copiaPecasBobo);
+                    } else if (pecasTransformarPretas.isEmpty()){
+                        pecasTransformarPretas.addAll(copiaPecasBobo);
+                    }
+                }
+
+                if (pecaSelecionada instanceof Ladrao && foiCaptura) {
+                    mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
+                } else {
+                    trocarTurno();
+                }
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Movimento ILEGAL!");
+            }
+
+            // Limpa a seleção e redesenha o tabuleiro para qualquer tentativa de movimento
+            atualizarTabuleiro();
+            deselecionarPeca();
+        }
+    }
+
+    public void handleSecondaryClick(int linha, int coluna) {
+
+        if (pecaSelecionada instanceof BoboDaCorte) {
+
+            modularBobo(pecaSelecionada, linha, coluna);
+
+        }
+
+    }
+
+    // --- MÉTODOS AUXILIARES DE LÓGICA DE JOGO ---
+
+    private boolean isMovimentoLegal(int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
+        // Passo 1: Verifica se o movimento é geometricamente válido para a peça.
+        if (!pecaSelecionada.isMovimentoValido(jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal)) {
+            return false;
+        }
+
+        // Passo 2: A LÓGICA DE SIMULAÇÃO FOI MOVIDA PARA CÁ (LUGAR CORRETO)
+        Tabuleiro tabuleiroSimulado = jogoDeXadrez.clonar();
+        tabuleiroSimulado.moverPeca(linhaInicial, colunaInicial, linhaFinal, colunaFinal);
+
+        int[] posRei = tabuleiroSimulado.encontrarRei(turnoAtual);
+        if (posRei == null) return true; // Segurança
+
+        String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
+
+        // Passo 3: O movimento só é legal se o Rei NÃO estiver sob ataque na simulação.
+        return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente);
+    }
+
+    private boolean temMovimentoLegal(String corDoJogador) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Peca peca = jogoDeXadrez.getPeca(i, j);
+                if (peca != null && peca.getCor().equals(corDoJogador)) {
+                    this.pecaSelecionada = peca; // Seleciona temporariamente
+                    for (int x = 0; x < 8; x++) {
+                        for (int y = 0; y < 8; y++) {
+                            if (isMovimentoLegal(i, j, x, y)) {
+                                this.pecaSelecionada = null; // Limpa a seleção temporária
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        this.pecaSelecionada = null; // Limpa a seleção temporária
+        return false;
+    }
+
+    private void verificarFimDeJogo() {
+        if (!temMovimentoLegal(turnoAtual)) {
+            this.jogoAcabou = true; // Trava o jogo
+            int[] posRei = jogoDeXadrez.encontrarRei(turnoAtual);
+            String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
+
+            if (jogoDeXadrez.check(posRei[0], posRei[1], corDoOponente)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Fim de Jogo!");
+                alert.setHeaderText("XEQUE-MATE!");
+                String vencedor = corDoOponente.substring(0, 1).toUpperCase() + corDoOponente.substring(1);
+                alert.setContentText(vencedor + "s venceram!");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Fim de Jogo!");
+                alert.setHeaderText("EMPATE!");
+                alert.setContentText("O jogo terminou em empate por Rei Afogado (Stalemate).");
+                alert.showAndWait();
+            }
+        }
+    }
+
+    private void trocarTurno() {
+        turnoAtual = turnoAtual.equals("branco") ? "preto" : "branco";
+        atualizarTituloDaJanela();
+        verificarFimDeJogo();
+    }
+
+    // --- MÉTODOS DE UI E VISUAIS ---
+
+    public void desenharTabuleiro() {
+
+        tabuleiroGrid.getChildren().clear();
+
+
+
+        for (int row = 0; row < 8; row++) {
+
+            for (int col = 0; col < 8; col++) {
+
+                StackPane cell = new StackPane();
+
+
+
+                if ((row + col) % 2 == 0) {
+
+                    cell.setStyle("-fx-background-color: #eeeed2;");
+
+                } else {
+
+                    cell.setStyle("-fx-background-color: #673166;");
+
+                }
+
+
+
+                final int linha = row;
+
+                final int coluna = col;
+
+
+
+                Peca peca = jogoDeXadrez.getPeca(row, col);
+
+                cell.setOnMouseClicked(event -> {
+
+                    if (event.getButton() == MouseButton.PRIMARY) {
+
+                        handlePrimaryClick(cell, linha, coluna);
+
+                    } else if (event.getButton() == MouseButton.SECONDARY) {
+
+                        handleSecondaryClick(linha, coluna);
+
+                    }
+
+                });
+
+
+
+                if (peca != null) {
+
+                    Image image = new Image(
+
+                            getClass().getResourceAsStream(
+
+                                    "/images/" + peca.getCor() + "/" + peca.getNomePeca() + ".png"
+
+                            )
+
+                    );
+
+                    ImageView imageView = new ImageView(image);
+
+                    imageView.setFitWidth(50);
+
+                    imageView.setFitHeight(50);
+
+                    cell.getChildren().add(imageView);
+
+                }
+                tabuleiroGrid.add(cell, col, row);
+            }
+        }
+    }
+
+    public void atualizarTabuleiro() {
+        desenharTabuleiro();
+    }
+
+    private Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
+
+        for (Node node : gridPane.getChildren()) {
+
+            if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
+
+                return node;
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public void mostrarMovimentosValidos(int linhaOrigem, int colunaOrigem) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                // CORREÇÃO: Usar isMovimentoLegal para só mostrar movimentos 100% válidos
+                if (isMovimentoLegal(linhaOrigem, colunaOrigem, i, j)) {
+                    javafx.scene.shape.Circle circuloIndicador = new javafx.scene.shape.Circle(12);
+                    circuloIndicador.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, 0.3));
+                    circuloIndicador.setMouseTransparent(true);
+                    GridPane.setHalignment(circuloIndicador, HPos.CENTER);
+                    GridPane.setValignment(circuloIndicador, VPos.CENTER);
+                    tabuleiroGrid.add(circuloIndicador, j, i);
+                }
+            }
+        }
+    }
+
+    private void mostrarDialogoDoLadrao(int linhaInicial, int colunaInicial, int linha, int coluna) {
+        // Este método está correto, não precisa mudar
+    }
+
+    private void atualizarTituloDaJanela() {
+        if (tabuleiroGrid.getScene() == null || tabuleiroGrid.getScene().getWindow() == null) return;
+        Stage stage = (Stage) tabuleiroGrid.getScene().getWindow();
+        String corCapitalizada = turnoAtual.substring(0, 1).toUpperCase() + turnoAtual.substring(1);
+        stage.setTitle("XXXadrez! - Vez das " + corCapitalizada + "s");
+    }
+
+    public void deselecionarPeca() {
+        pecaSelecionada = null;
+        cellSelecionada = null;
+    }
+}
