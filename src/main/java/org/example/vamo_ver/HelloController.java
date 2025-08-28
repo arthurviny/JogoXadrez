@@ -537,8 +537,8 @@ public class HelloController implements Initializable {
     private void atualizarTituloDaJanela() {
         if (tabuleiroGrid.getScene() == null || tabuleiroGrid.getScene().getWindow() == null) return;
         Stage stage = (Stage) tabuleiroGrid.getScene().getWindow();
-        String corCapitalizada = turnoAtual.substring(0, 1).toUpperCase() + turnoAtual.substring(1);
-        stage.setTitle("XXXadrez! - Vez das " + corCapitalizada + "s");
+        String corCapitalizada = turnoAtual.equals("branco") ? "Brancas" : "Pretas";
+        stage.setTitle("XXXadrez! - Vez das " + corCapitalizada);
     }
 
     public void deselecionarPeca() {
