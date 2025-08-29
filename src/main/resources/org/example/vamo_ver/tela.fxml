@@ -12,21 +12,13 @@
     <ImageView fx:id="backgroundImage" fitWidth="600" fitHeight="400" preserveRatio="true"/>
 
     <VBox alignment="CENTER" spacing="20">
-        <ImageView fx:id="logoImage" fitWidth="200" preserveRatio="true"/>
+        <ImageView fx:id="logoImage" fitWidth="350" preserveRatio="true"/>
         <Button fx:id="playButton" text="▶ JOGAR"
                 style="-fx-font-size: 16px;
                -fx-font-weight: bold;
                -fx-text-fill: white;
-               -fx-background-color: linear-gradient(to right, #673166, #673161);
-               -fx-background-radius: 20;
-               -fx-padding: 12 30;
-               -fx-cursor: hand;"/>
-        <Button fx:id="instrucoes" text="Instruções"
-                style="-fx-font-size: 16px;
-               -fx-font-weight: bold;
-               -fx-text-fill: white;
-               -fx-background-color: linear-gradient(to right, #673166, #673161);
-               -fx-background-radius: 20;
+               -fx-background-color: linear-gradient(to right, #8c2fba, #8c2fbc);
+               -fx-background-radius: 5;
                -fx-padding: 12 30;
                -fx-cursor: hand;"/>
     </VBox>
