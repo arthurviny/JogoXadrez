@@ -2,10 +2,7 @@ package org.example.vamo_ver;
 
 // Imports necessários
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Optional;
+import java.util.*;
 
 import game.BoboDaCorte;
 import game.Ladrao;
@@ -38,10 +35,15 @@ public class HelloController implements Initializable {
     private StackPane cellSelecionada = null;
     private String turnoAtual = "branco";
     private boolean jogoAcabou = false;
+    private boolean boboConsegueSalvar = false;
     List<String> pecasTransformarPretas = new ArrayList<>();
     List<String> pecasTransformarBrancas = new ArrayList<>();
-    List<String> todasPecasMenosReiPeao = new ArrayList<>();
 
+    // Usamos conjuntos para evitar duplicatas
+    Set<String> pecasBoboImpedirCheckPretas = new HashSet<>();
+    Set<String> pecasBoboImpedirCheckBrancas = new HashSet<>();
+
+    List<String> todasPecasMenosReiPeao = new ArrayList<>();
     List<String> copiaPecasBobo = new ArrayList<>();
 
     @Override
@@ -183,7 +185,7 @@ public class HelloController implements Initializable {
 
         int contador = 0;
         if (bobo.getCor().equals("branco")) {
-            for (String modo : pecasTransformarBrancas) {
+            for (String modo : boboConsegueSalvar ? pecasBoboImpedirCheckBrancas : pecasTransformarBrancas) {
                 Image image = new Image(
                         getClass().getResourceAsStream(
                                 "/images/" + bobo.getCor() + "/" + modo + ".png"
@@ -198,6 +200,7 @@ public class HelloController implements Initializable {
                     // Lógica para mudar o modo do bobo
                     jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
                     // Mostrar os movimentos válidos logo após escolher o modo do bobo
+                    limparMovimentosValidos();
                     mostrarMovimentosValidos(linha, coluna);
                     System.out.println("Modo do Bobo da Corte alterado para: " + modo);
 
@@ -222,7 +225,7 @@ public class HelloController implements Initializable {
                 popup.show(tabuleiroGrid, screenX + 50, screenY);
             }
         } else {
-            for (String modo : pecasTransformarPretas) {
+            for (String modo : boboConsegueSalvar ? pecasBoboImpedirCheckPretas : pecasTransformarPretas) {
                 Image image = new Image(
                         getClass().getResourceAsStream(
                                 "/images/" + bobo.getCor() + "/" + modo + ".png"
@@ -234,8 +237,10 @@ public class HelloController implements Initializable {
                 imageView.setFitHeight(30);
                 imageView.setOnMouseClicked(event -> {
 
-// Lógica para mudar o modo do Bobo da Corte
+                    // Lógica para mudar o modo do Bobo da Corte
                     jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
+                    // Antes de mostrar os movimentos válidos da nova peça, limpa os movimentos válidos antigos
+                    limparMovimentosValidos();
                     mostrarMovimentosValidos(linha, coluna);
                     System.out.println("Modo do Bobo da Corte alterado para: " + modo);
 
@@ -305,9 +310,11 @@ public class HelloController implements Initializable {
                     String modoAtualBobo = bobo.getModoAtual();
                     if (peca.getCor().equals("branco")) {
                         pecasTransformarBrancas.remove(modoAtualBobo);
+                        jogoDeXadrez.setListaModosBobo(linha, coluna, pecasTransformarBrancas);
                         jogoDeXadrez.setModoDoBobo(linha, coluna, "nulo");
                     } else {
                         pecasTransformarPretas.remove(modoAtualBobo);
+                        jogoDeXadrez.setListaModosBobo(linha, coluna, pecasTransformarPretas);
                         jogoDeXadrez.setModoDoBobo(linha, coluna, "nulo");
                     }
 
@@ -342,8 +349,11 @@ public class HelloController implements Initializable {
     }
 
     // --- MÉTODOS AUXILIARES DE LÓGICA DE JOGO ---
-    // Testando commit
     private boolean isMovimentoLegal(int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
+        if (pecaSelecionada == null) {
+            return false;
+        }
+
         // Passo 1: Verifica se o movimento é geometricamente válido para a peça.
         if (!pecaSelecionada.isMovimentoValido(jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal)) {
             return false;
@@ -363,22 +373,69 @@ public class HelloController implements Initializable {
     }
 
     private boolean temMovimentoLegal(String corDoJogador) {
+        // Percorremos todas as peças do tabuleiro
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Peca peca = jogoDeXadrez.getPeca(i, j);
+                // Só importa pra gente a peça da cor do jogador que estamos verificando
                 if (peca != null && peca.getCor().equals(corDoJogador)) {
+                    // Precisamos de uma verificação especial pro bobo da corte
+                    // Percorrendo todas as peças do bobo pra ver se alguma pode impedir o check
                     this.pecaSelecionada = peca; // Seleciona temporariamente
-                    for (int x = 0; x < 8; x++) {
-                        for (int y = 0; y < 8; y++) {
-                            if (isMovimentoLegal(i, j, x, y)) {
-                                this.pecaSelecionada = null; // Limpa a seleção temporária
-                                return true;
+                    if (pecaSelecionada instanceof BoboDaCorte) {
+                        BoboDaCorte bobo = (BoboDaCorte) pecaSelecionada;
+                        String modoOriginalBobo = bobo.getModoAtual();
+                        if (corDoJogador.equals("branco")) {
+                            for (String pecaTexto: pecasTransformarBrancas) {
+                                jogoDeXadrez.setModoDoBobo(i, j, pecaTexto);
+                                for (int x = 0; x < 8; x++) {
+                                    for (int y = 0; y < 8; y++) {
+                                        // Verificamos, pra cada peça, se ainda existe um movimento
+                                        // legal, se não existir mais movimentos legais, o jogo acaba
+                                        if (isMovimentoLegal(i, j, x, y)) {
+                                            pecasBoboImpedirCheckBrancas.add(pecaTexto);
+                                            boboConsegueSalvar = true;
+                                        }
+                                    }
+                                    for(String pecaT : pecasBoboImpedirCheckBrancas) {
+                                        System.out.println(pecaT);
+                                    }
+                                }
+                            }
+                        } else {
+                            for (String pecaTexto: pecasTransformarPretas) {
+                                jogoDeXadrez.setModoDoBobo(i, j, pecaTexto);
+                                for (int x = 0; x < 8; x++) {
+                                    for (int y = 0; y < 8; y++) {
+                                        // Verificamos, pra cada peça, se ainda existe um movimento
+                                        // legal, se não existir mais movimentos legais, o jogo acaba
+                                        if (isMovimentoLegal(i, j, x, y)) {
+                                            pecasBoboImpedirCheckPretas.add(pecaTexto);
+                                            boboConsegueSalvar = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        bobo.setModo(modoOriginalBobo); // Voltamos o modo do bobo pro que ele era antes, já que
+                        this.pecaSelecionada = null;    // trocamos ele apenas pra verificar se alguma variação podia
+                                                        // podia impedir o check
+                    } else {
+                        for (int x = 0; x < 8; x++) {
+                            for (int y = 0; y < 8; y++) {
+                                // Verificamos, pra cada peça, se ainda existe um movimento
+                                // legal, se não existir mais movimentos legais, o jogo acaba
+                                if (isMovimentoLegal(i, j, x, y)) {
+                                    this.pecaSelecionada = null; // Limpa a seleção temporária
+                                    return true;
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        if (boboConsegueSalvar) return true;
         this.pecaSelecionada = null; // Limpa a seleção temporária
         return false;
     }
@@ -406,7 +463,7 @@ public class HelloController implements Initializable {
         }
     }
 
-    private void ativarOuDesativarModoFuria() {
+    private void verificarCheck() {
         int[] posRei = jogoDeXadrez.encontrarRei(turnoAtual);
         if (posRei == null) return;
 
@@ -419,18 +476,15 @@ public class HelloController implements Initializable {
         boolean reiEmCheck = jogoDeXadrez.check(posRei[0], posRei[1], corOponente);
 
         jogoDeXadrez.setFuriaHeroi(posHeroi[0], posHeroi[1], reiEmCheck);
-
-        if (reiEmCheck) {
-            System.out.println("Rei do turno atual está em check, modo fúria do herói ativado.");
-        } else {
-            System.out.println("Rei do turno atual não está em check, modo fúria do herói desativado.");
-        }
     }
 
 
     private void trocarTurno() {
         turnoAtual = turnoAtual.equals("branco") ? "preto" : "branco";
-        ativarOuDesativarModoFuria();
+        verificarCheck();
+        boboConsegueSalvar = false; // Como é por turnos, só precisamos de uma variável se o bobo consegue salvar, que vai ser usada pelos dois lados
+        pecasBoboImpedirCheckBrancas.clear(); // Limpar as peças que podem impedir o check do turno anterior
+        pecasBoboImpedirCheckPretas.clear();
         atualizarTituloDaJanela();
         verificarFimDeJogo();
     }
@@ -504,6 +558,21 @@ public class HelloController implements Initializable {
                 }
             }
         }
+    }
+
+    private void limparMovimentosValidos() {
+        // Criamos uma lista do tipoNode que vai armazenar todos os circulos que queremos remover
+        List<Node> circulosParaRemover = new ArrayList<>();
+        // Vamos percorrer cada node na filhos da grid do tabuleiro
+        for (Node node : tabuleiroGrid.getChildren()) {
+            // Sempre que esse esse node for uma instância de circulo, adicionamos nesse array de circulos pra remover
+            if (node instanceof javafx.scene.shape.Circle) {
+                circulosParaRemover.add(node);
+            }
+        }
+
+        // Vamos na nossa grid do tabuleiro, pegamos todos os filhos dele, e removemos todo o array de circulos pra remover
+        tabuleiroGrid.getChildren().removeAll(circulosParaRemover);
     }
 
     private void mostrarDialogoDoLadrao(int linhaInicial, int colunaInicial, int linha, int coluna) {

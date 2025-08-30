@@ -1,16 +1,30 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoboDaCorte extends Peca {
+    private List<String> listaModosBobo;
     private String modoAtual = "gklashgikasg";
 
     public BoboDaCorte(String cor) {
         super(cor);
         this.nomePeca = "BoboDaCorte";
+        this.listaModosBobo = new ArrayList<>();
     }
 
     public void setModo(String novoModo) {
         this.modoAtual = novoModo;
     }
+
+    public void setListaModosBobo(List<String> listaModosBobo) {
+        this.listaModosBobo = listaModosBobo;
+    }
+
+    public List<String> getListaModosBobo() {
+        return listaModosBobo;
+    }
+
 
     public String getModoAtual() {
         return modoAtual;
@@ -100,16 +114,65 @@ public class BoboDaCorte extends Peca {
                 return false; // Se nenhuma das condições acima for atendida, o movimento é inválido.
             }
             case "Templario": {
-                if(diffLinha <= 7 || diffColuna <= 7) {
-                    if (pecaDestino == null || !pecaDestino.getCor().equals(this.cor)) {
-                        return true;
-                    }
+                // Regra básica: não pode capturar uma peça da mesma cor.
+                if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
                     return false;
                 }
+
+                // --- REGRA 1: Movimento vertical de até 4 casas ---
+                if (colunaInicial == colunaFinal && (diffLinha > 0 && diffLinha <= 4)) {
+                    int passo = (linhaFinal > linhaInicial) ? 1 : -1;
+                    for (int i = linhaInicial + passo; i != linhaFinal; i += passo) {
+                        if (tabuleiro.getPeca(i, colunaInicial) != null) {
+                            return false; // Caminho bloqueado.
+                        }
+                    }
+                    return true;
+                }
+
+                // --- REGRA 2: Movimento especial (3 vertical, 1 horizontal) SEM PULAR ---
+                if (diffLinha == 3 && diffColuna == 1) {
+                    // Este movimento NÃO pula peças. Verificamos as duas casas no caminho vertical.
+                    int passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
+
+                    // Verifica a primeira casa no caminho vertical
+                    if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) != null) {
+                        return false; // Caminho bloqueado na primeira casa.
+                    }
+
+                    // Verifica a segunda casa no caminho vertical
+                    if (tabuleiro.getPeca(linhaInicial + (2 * passoLinha), colunaInicial) != null) {
+                        return false; // Caminho bloqueado na segunda casa.
+                    }
+
+                    // Se o caminho vertical estiver livre, o movimento é válido.
+                    return true;
+                }
+
                 return false;
             }
             case "Principe": {
+                if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
+                    return false;
+                }
 
+                // Só pode andar exatamente 1 linha na direção "pra frente"
+                if (diffLinha <= 1 && diffLinha != 0 && diffColuna <= 1) {
+                    return true;
+                }
+
+                if (diffLinha == 2 && diffColuna == 0) {
+                    int passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
+                    int passoColuna = (colunaFinal > colunaInicial) ? 1 : -1;
+
+                    // Verifica a casa intermediária
+                    if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) != null) {
+                        return false; // Caminho bloqueado, movimento inválido.
+                    }
+                    return true;
+                }
+
+                return false;
             }
             case "Torre": {
                 if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
