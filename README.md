@@ -1,5 +1,7 @@
 # ♟️ Xadrez 2
 
+![Capa do Projeto](./images/capa.png)
+
 Xadrez foi um jogo criado no final do século XV, tendo evoluído de um jogo mais antigo de origem indiana chamado **Chaturanga**.  
 Chaturanga teria se espalhado pelo mundo árabe e posteriormente chegado à Europa, sofrendo modificações até chegar no modelo de jogo que temos hoje.  
 
