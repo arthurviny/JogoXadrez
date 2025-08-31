@@ -91,4 +91,94 @@ Sua força reside em sua lealdade, e ele luta com uma fúria incontrolável quan
 
 ## 💻 Xadrez e a Programação Orientada a Objetos
 
-Este projeto foi desenvolvido aplicando conceitos de **POO (Programação Orientada a Objetos)** para estruturar as peças, regras e mecânicas do Xadrez 2, explorando herança, polimorfismo e encapsulamento de forma prática.
+Este projeto foi desenvolvido aplicando conceitos de **POO (Programação Orientada a Objetos)** para estruturar as peças, regras e mecânicas do Xadrez 2, explorando herança, polimorfismo e encapsulamento, os três pilares da Progração Orientada a Objetos de forma prática para a matéria de Programação Orientada a Objetos com o professor Leonardo.
+
+Primeiramente, nota-se de maneira explícita, a presença da herança ao passo que, todas as classes de peças, herdam de uma classe mãe denominada de "Peça", classe essa que é abstrata, conceito também abordado durante as aulas, optando pela escolha de uma classe abstrata no lugar de uma interface pela praticidade de ter partes que serviriam para todas as peças, como o getNomePeca e o getCor.
+
+Partindo para o polimorfismo, durante o desenvolvimento do projeto, foram utilizados a maioria dos tipos de polimorfismo, sendo cruciais para o desenvolvimento da aplicação, abaixo estão esses tipos
+e onde e como foram utilizados no nosso código:
+
+- Polimorfismo de Sobrecarga: Como já dito anteriormente, todas as classes de peças foram criadas a partir da classe mãe, herdando todos os seus comportamentos e métodos, a partir disso, foi utilizado
+o polimorfismo de sobrecarga para sobescrever os métodos utilizados na classe mãe, métodos que deveriam estar presentes em todos os tipos de peça, o método mais essencial e mais utilizado durante o
+desenvolvimento "isMovimentoValido" foi sobescrito por cada peça para indicar que movimento seria válido ou não para cada peça.
+- Polimorfismo de Coerção: O polimorfismo de coerção basicamente trata de uma conversão ímplica ou explícita de tipos, no nosso código, isso foi necessário na criação da peça do BoboDaCorte, a medida
+que, para definir um modo no bobo da corte, precisamos pegar a peça selecionada, e essa pecaSelecionada, por ser apenas do tipo Peca, não tinha acesso aos métodos específicos do BoboDaCorte para então definir o seu modo, então o que foi feito, através do polimorfismo de coerção, convertemos explicitamente a peca para o tipo Bobo, através da linha BoboDaCorte bobo = (BoboDaCorte) pecaSelecionada, indicando ao compilador que aquela peça em específico é do tipo BoboDaCorte.
+- Polimorfismo de Inclusão: Temos então o polimorfismo de inclusão, que diz sobre tratar objetos de diferentes subclasses como se fossem objetos da superclasse, isso é evidenciado em alguns momentos
+no código, mas um ponto bastante evidente é na parte de criação de peças, especialmente no construtor do Tabuleiro, que trata onde as peças inicialmente estarão, fazemos com que cada peca do tipo
+Peca, receba um tipo de Peça através da função criarPeca, que retorna através de um switch um tipo diferente de construtor de peca.
+- Polimorfismo Paramêtrico: Quanto ao polimorfismo paramêtrico, seu uso se deu exclusivamente pelo uso da biblioteca Collections, que em sua composição, por de trás dos panos, utiliza o polimorfismo
+paramêtrico, através do Generics da linguagem Java. Durante o processo de desenvolvimento, foram necessárias a criação de listas de tamanhos indeterminados, que iriam variar dependendo de determinados comportamentos dentro do jogo, tendo isso em vista, fizemos uso de um ArrayList, que cumpriu seu papel nesse quesito. Também foi utilizado um HashSet (Conjunto), que como sabemos, funciona assim como
+um conjunto matemático, não permitindo duplicatas, o que também se mostrou útil durante a realização do projeto.
+
+E por último, quanto ao quesito de encapsulamento, outro importante pilar, como se sabe, o encapsulamento trata do príncipio de proteger os dados internos de uma classe, permitindo acessa-los ou modifica-los através de métodos especiais (os chamados Getters e Setters), garantindo então dessa forma segurança e organização de código. Isso se demonstra presente em vários momentos ao longo do
+código de modo que seria muito difícil nomear a dedos tais casos, mas um bom exemplo seria através do método de setarModoDoBobo, em que o funcionamento que ocorria era: através do nosso controller que coordenava o que acontecia na GUI, nós chamavamos a classe do tabuleiro, que dizia a respeito do tabuleiro do jogo em questão, e então, chamava um setarModoBobo para esse tabuleiro em questão, e dentro dessa tabuleiro em questão, outro set era chamado, para mudar então o modo do bobo do tabuleiro em questão e da cor em questão, mostrando assim um uso controlado dos estados da aplicação e respeitando o princípio do encapsulamento. Importante ressaltar que essa abordagem foi utilizada em inúmeras outras partes da aplicação, não só Setters como também Getters, como adquirir a cor do jogador em questão para modular suas jogadas. 
+
+Assim, percebemos como a Programação Orientada a Objetos foi crucial para o desenvolvimento do projeto, sendo uma abordagem que tornou o jogo mais escalável, a medida que a criação de novas peças agora já é muito mais facilitada com a abordagem com herança, como se tornou um código menos propenso a erros por conta da organização e proteção do princípio do encapsulamento, além do polimorfismo facilitar diversos processos combinacionais e lógicos dentro do jogo, onde sem isso, sua criação seria muito mais truncada e complexa. 
+
+## 💻 Principais funções para funcionamento do Xadrez
+
+Durante o desenvolvimento, foi necessário a criação de inúmeras funções pra simular o comportamento de como um jogo de xadrez ocorre na realidade mas dessa vez em um ambiente computacional. Inicialmente é válido salientar que por toda a abordagem ter sido feita utilizando **JavaFX**, temos em nossa estrutura um arquivo de `Application`, responsável por carregar todos os nossos arquivos **FXML** e como eles interagem entre si, como também foi necessário a criação de um `Controller`, que funcionava como ponte entre entre o que acontecia no nosso *View* (fxml) e a própria lógica de jogo da nossa classe de `Tabuleiro` que detinha o jogo em si.
+
+Como dito, nosso `Controller` funciona como uma espécie de ponte entre o que acontece na nossa *View* e o jogo de xadrez de fato, assim, nele estão contidos "**Listeners**", ou em tradução livre "Escutadores" para cada célula do tabuleiro, dessa maneira, temos controle de cada click que acontece no tabuleiro e o que está sendo clicado, sem necessidade de comentar a importância disso especialmente quanto a movimentação das peças no tabuleiro. Dessa forma, abaixo estão documentadas o funcionamento das principais funções do nosso controlador e como elas interagem com a lógica de jogo em si:
+
+
+- `initialize()`: Como o próprio nome já diz, essa função está responsável por inicializar algumas das principais variáveis e funções do jogo, como as peças que cada *Bobo da Corte* tem acesso, como também chamar a função que desenha o tabuleiro em si para que as peças estejam visíveis, puxando nossa instância do tabuleiro com o array 8x8 de peças e então colocando na interface gráfica.
+
+- `handlePrimaryClick()`: Nessa função, o que fazemos é, pegamos a célula clicada, que vem como argumento da nossa função, verificamos se não há nenhuma **pecaSelecionada**, se não houver, pegamos essa peça que clicamos e se ela for da cor do **turno atual**, selecionamos efetivamente ela, e chamamos a função de `mostrarMovimentosValidos` dessa peça, que nos diz como essa peça pode se mover dentro do tabuleiro. Partimos então para o caso em que já há uma peça selecionada, nesse caso, o que vamos fazer é mexer essa peça pra algum dos quadrados válidos dela e utilizando a função de `moverPeca` que efetivamente move a peça no nosso Array 8x8 de peças, que posteriormente será redesenhado na GUI antes de trocar de turno. Nessa função também é feita a lógica de peças como o *Peão*, *Bobo da Corte* e *Ladrão*, verificando se o peão irá para um casa de promoção, removendo o modo usado pelo bobo da corte, e verificando se houve uma captura feita pelo ladrão antes de trocar de turno.
+
+- `handleSecondaryClick()`: Função bastante simples, basicamente trata do caso em que, se a peça selecionada for uma instância de *Bobo da Corte*, isto é, for um Bobo de fato, o que fazemos é, por essa peça ter um Listener para o botão direito, chamamos a função de `modularBobo` que cuida de fato da troca de modos do bobo.
+
+- `isMovimentoLegal()`: Função que válida se um movimento é legal ou não de ser feito, essa função foi feita com o objetivo de verificar se o movimento que o jogador está fazendo não coloca o próprio **Rei** em **check**, primeiro verificamos se a jogada é válida *geometricamente*, se a peça pode fazer isso, se não poder, o movimento não é legal, então, caso passe dessa parte, o que será feito é, um clone do tabuleiro atual é criado, e verifica-se se, se após fazer esse movimento, o rei fica em check, caso fique, o movimento não é legal, caso não fique, o movimento é legal e o jogador pode então fazer sua jogada.
+
+- `temMovimentoLegal()`: Função que tem como objetivo verificar se o jogador ainda tem algum movimento legal, o que é feito é, pega-se cada peça do tabuleiro da cor em questão, e verifica-se se há alguma jogada válida pra cada uma dessas peças, de certo modo verificando se alguma jogada poderia salvar o **Rei** em caso dele estar em check, caso não haja nenhum movimento legal há se fazer, a função retorna `false`, e será crucial para a função de `verificarFimDeJogo()`. Um adendo importante é que essa função também percorre todos os possíveis modos do bobo, pra ver se algum dos modos tem alguma jogada legal.
+
+- `verificarFimDeJogo()`: Chamada a cada troca de turno, verifica se o turno atual tem algum movimento legal, se não houver, o jogo acabou, contendo dois possíveis jeitos de acabar o jogo, com ele empatando por afogamento ou por **checkmate**, isso é feito verificando se no momento que não há nenhum movimento legal, o rei está em check ou não.
+
+- `modularBobo()` / `modularPromocao()`: Funções responsáveis por criar um mini popup para que o usuário possa escolher seu respectivo modo do bobo, como também em que peça o peão quer ser promovido.
+
+- `mostrarMovimentosValidos()`: Função que percorre todo o array do tabuleiro, criando um pequeno circulo transparente nas posições em que o movimento é legal, isso é feito passando a posição da peça que se quer verificar se há posições legais para cada posição do tabuleiro, se houver, ele irá criar o circulo transparente usando javafx naquela posição. Detalhe importante: também a função de `limparMovimentosValidos()`, que foi feita para contornar um problema que estava ocorrendo com o bobo em que os movimentos válidos estavam sendo sobrepostos.
+
+Agora, uma vez comentadas as funções principais do nosso controller que gerencia entre a interface gráfica e o nosso jogo de fato, é importante também entender as principais funções do nosso jogo de fato, ou seja, as funções da nossa classe tabuleiro, onde toda a lógica de jogo e o tabuleiro em si está localizado. Abaixo estão listadas as principais e o que fazem:
+
+- `check()`: Testa todas as peças do tabuleiro verificando se algum movimento válido dessas peças está no mesmo quadrado do **Rei** (ou das coordenadas passadas como parâmetro), caso esteja, retorna `true`, informando que a peça em questão (no nosso caso apenas o Rei) está em check. Importante que nessa função, ele também checa todos os modos do bobo, isso foi feito para que o rei não possa se locomover para posições em que algum dos modos do bobo pode resultar em sua captura.
+
+- `clonar()`: Função que cria um novo tabuleiro **clone** do atual, foi necessário para a função de `isMovimentoLegal()` do nosso controller, pois um novo tabuleiro é criado pra simular se após uma jogada for feita, o Rei teria entrado em check por conta disso.
+
+- `criarPeca()`: Função que recebe como parâmetros uma string indicando que peça deve ser criada, e a cor da peça que deve ser criada, utilizando isso em um switch case em que o retorno é um objeto de tal respectivo tipo que irá ser alocado a um tipo `Peca` e posteriormente colocado no tabuleiro.
+
+- `moverPeca()`: Função que recebe como parâmetros, a linha inicial e a coluna inicial de uma dada peça, assim como para onde ela irá a seguir, isso após ter sido feita a validação individual presente em cada tipo diferente de peça (`isMovimentoValido`), assim então limpando a posição inicial e chamando `setPeca()` para colocar a peça na sua nova localização.
+
+- `encontrarRei()`: Função com o único objetivo de achar onde o rei está no tabuleiro, foi necessário sua criação para verificar onde o rei está a todo momento para verificar se ele não está em check.
+
+- `encontrarHeroi()`: Função com o único objetivo de achar onde está o herói no tabuleiro, se houver um, pois caso o Rei entre em check, o herói precisa entrar em modo de fúria, e era necessário saber sua posição para isso.
+
+- `setModoBobo()`/`setFuriaHeroi()`: Função feita com objetivo de trocar o estado das peças em questão através da classe do Tabuleiro, garantindo o princípio do encapsulamento e evitando modificações diretas que poderiam ser problemáticas.
+
+- `getPecasNoTabuleiro()`: Função *getter* que retorna todas as peças que estão no tabuleiro, importante para a criação do array de modos do bobo.
+
+# ☕ Java vs. 📜 JavaScript: Uma Análise Comparativa do Projeto
+Embora a lógica e as regras do "Xadrez 2" sejam as mesmas em ambas as versões do projeto, a implementação em Java (com JavaFX) e em JavaScript (para a web) revela diferenças fundamentais na filosofia das linguagens e seus ecossistemas, especialmente na aplicação dos pilares da Programação Orientada a Objetos.
+
+A principal distinção pode ser resumida em: Segurança em Tempo de Compilação (Java) vs. Flexibilidade em Tempo de Execução (JavaScript).
+
+## Herança: Contrato vs. Comportamento
+A base do projeto é uma classe Peca da qual todas as outras peças herdam.
+
+- Em Java: Foi utilizada uma abstract class Peca. A palavra-chave abstract funciona como um contrato forçado pelo compilador. Ela garante, antes mesmo de o programa rodar, que é impossível criar uma "Peça" genérica e obriga que toda subclasse (como Rei ou Templario) implemente o método isMovimentoValido.
+
+- Em JavaScript: A sintaxe de herança é visualmente similar (class Rei extends Peca), mas não existe o conceito de abstract nativamente. Para garantir que as subclasses implementem os métodos necessários, a prática comum é lançar um erro no método da classe mãe. Isso transfere a responsabilidade do compilador para o tempo de execução (runtime).
+
+## Polimorfismo: O Impacto da Tipagem
+O polimorfismo se manifesta de maneiras muito distintas devido à diferença fundamental entre tipagem estática e dinâmica.
+
+Coerção (Casting):
+
+- Em Java: Foi essencial usar o casting explícito: BoboDaCorte bobo = (BoboDaCorte) pecaSelecionada;. Devido à tipagem estática, o compilador só "enxerga" o tipo da variável (Peca) e precisa ser instruído a tratá-la como sua subclasse para acessar métodos específicos.
+
+- Em JavaScript: Este conceito é praticamente inexistente. Com a tipagem dinâmica, um objeto é o que ele é. A variável guarda o objeto BoboDaCorte completo, e podemos chamar seus métodos diretamente, geralmente após uma verificação com instanceof, sem necessidade de "converter" o tipo
+
+## Encapsulamento: Privacidade Real vs. Convenções
+
+- Em Java: O acesso é rigorosamente controlado pelas palavras-chave private, protected e public. É um pilar reforçado pela própria linguagem, garantindo que o estado interno dos objetos seja protegido.
+
+- Em JavaScript: Historicamente, a privacidade era mantida por convenção, usando um underscore (_) para sinalizar que uma propriedade não deveria ser acessada de fora. Versões modernas da linguagem introduziram propriedades verdadeiramente privadas com o uso do # (cerquilha), tornando o encapsulamento em JS muito mais próximo do que se vê em Java.

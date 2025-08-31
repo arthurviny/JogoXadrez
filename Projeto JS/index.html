@@ -3,10 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XXXadrez!</title> <link rel="stylesheet" href="./assets/styles/main.css"> </head>
-<body>
-<div id="game-root"></div>
+    <meta name="description" content="Xadrez 2: Uma reimaginação do xadrez clássico com novas peças e mecânicas.">
+    
+    <title>Xadrez 2</title>
+    
+    <link rel="icon" href="./assets/images/logoBobo.png" type="image/png">
 
-<script type="module" src="./src/main.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="./assets/styles/main.css">
+    <link rel="stylesheet" href="./assets/styles/ladrao-dialog.css">
+</head>
+<body>
+
+    <main id="game-container">
+        </main>
+
+    <div id="popup-promocao" class="popup-container hidden">
+        <div class="popup-content">
+            <h3>Promover Peão</h3>
+            <div class="popup-options">
+                </div>
+        </div>
+    </div>
+
+    <div id="popup-bobo" class="popup-container hidden">
+        <div class="popup-content">
+            <h3>Escolha um Modo</h3>
+            <div class="popup-options">
+                </div>
+        </div>
+    </div>
+
+    <div id="dialogo-ladrao" class="popup-container hidden">
+        <div class="popup-content ladrao-dialog-content">
+            <h3>Habilidade do Ladrão!</h3>
+            <p>O Ladrão capturou uma peça. Deseja recuar para a casa original?</p>
+            <div class="botoes-dialogo">
+                <button id="botao-recuar-sim">Sim, recuar!</button>
+                <button id="botao-recuar-nao">Não, ficar.</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+
 </body>
 </html>

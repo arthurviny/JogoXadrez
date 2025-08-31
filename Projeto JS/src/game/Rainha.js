@@ -1,3 +1,7 @@
+import { Peca } from './Peca.js';
+import { Torre } from './Torre.js';
+import { Bispo } from './Bispo.js';
+
 export class Rainha extends Peca {
     constructor(cor) {
         super(cor);

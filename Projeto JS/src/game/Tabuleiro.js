@@ -129,6 +129,7 @@ export class Tabuleiro {
     }
 
     criarPeca(nome, cor) {
+        console.log(`Tentando criar a peça: '${nome}' da cor '${cor}'`);
         switch (nome) {
             case "Rainha": return new Rainha(cor);
             case "Rei": return new Rei(cor);
@@ -140,7 +141,10 @@ export class Tabuleiro {
             case "BoboDaCorte": return new BoboDaCorte(cor);
             case "Ladrao": return new Ladrao(cor);
             case "Templario": return new Templario(cor);
-            default: return null;
+            default: 
+            console.error(`--- ERRO FATAL: PEÇA NÃO ENCONTRADA ---`);
+            console.error(`O nome '${nome}' não corresponde a nenhuma peça conhecida.`);
+            return null;
         }
     }
 

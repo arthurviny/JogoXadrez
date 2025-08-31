@@ -8,7 +8,12 @@ export class Peca {
         return this.cor;
     }
 
+    // CORREÇÃO: Garanta que o nome do método está em camelCase correto.
+    getNomePeca() {
+        return this.nomePeca;
+    }
+
     isMovimentoValido(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal) {
-        throw new Error("A subclasse implementa");
+        throw new Error("O método 'isMovimentoValido' precisa ser implementado pela subclasse.");
     }
 }
