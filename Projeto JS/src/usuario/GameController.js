@@ -84,7 +84,31 @@ export class GameController {
             
          
             if (pecaMovida instanceof BoboDaCorte) {
+                    const bobo = pecaMovida;
+                const modoUsado = bobo.getModoAtual();
                 
+                // Se um modo válido foi usado (não "nulo")
+                if (modoUsado && modoUsado !== "nulo") {
+                    if (bobo.getCor() === "branco") {
+                        // Remove o modo da lista de brancas
+                        this.pecasDisponiveisBoboBranco = this.pecasDisponiveisBoboBranco.filter(m => m !== modoUsado);
+                        // Se a lista ficou vazia, reseta
+                        if (this.pecasDisponiveisBoboBranco.length === 0) {
+                            console.log("CICLO DO BOBO BRANCO COMPLETO! Resetando modos.");
+                            this.pecasDisponiveisBoboBranco = [...this.copiaPecasBobo];
+                        }
+                    } else { // Se for o bobo preto Remove o modo da lista de pretas
+                        this.pecasDisponiveisBoboPreto = this.pecasDisponiveisBoboPreto.filter(m => m !== modoUsado);
+                        // Se a lista ficou vazia, reseta
+                        if (this.pecasDisponiveisBoboPreto.length === 0) {
+                            console.log("CICLO DO BOBO PRETO COMPLETO! Resetando modos.");
+                            this.pecasDisponiveisBoboPreto = [...this.copiaPecasBobo];
+                        }
+                    }
+                }
+                
+                
+                bobo.setModo("nulo");              
             }
 
             
