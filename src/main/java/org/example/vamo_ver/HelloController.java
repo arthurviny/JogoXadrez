@@ -4,11 +4,7 @@ package org.example.vamo_ver;
 import java.net.URL;
 import java.util.*;
 
-import game.BoboDaCorte;
-import game.Ladrao;
-import game.Peao;
-import game.Peca;
-import game.Tabuleiro;
+import game.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -369,7 +365,10 @@ public class HelloController implements Initializable {
         String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
 
         // Passo 3: O movimento só é legal se o Rei NÃO estiver sob ataque na simulação.
-        return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente);
+        if (pecaSelecionada instanceof Rei) {
+            return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente, true);
+        }
+        return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente, false);
     }
 
     private boolean temMovimentoLegal(String corDoJogador) {
@@ -446,7 +445,7 @@ public class HelloController implements Initializable {
             int[] posRei = jogoDeXadrez.encontrarRei(turnoAtual);
             String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
 
-            if (jogoDeXadrez.check(posRei[0], posRei[1], corDoOponente)) {
+            if (jogoDeXadrez.check(posRei[0], posRei[1], corDoOponente, false)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Fim de Jogo!");
                 alert.setHeaderText("XEQUE-MATE!");
@@ -473,7 +472,7 @@ public class HelloController implements Initializable {
         if (posHeroi == null) return;
 
         // Usa a função check que já considera bloqueios
-        boolean reiEmCheck = jogoDeXadrez.check(posRei[0], posRei[1], corOponente);
+        boolean reiEmCheck = jogoDeXadrez.check(posRei[0], posRei[1], corOponente, false);
 
         jogoDeXadrez.setFuriaHeroi(posHeroi[0], posHeroi[1], reiEmCheck);
     }

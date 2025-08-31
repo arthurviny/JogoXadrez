@@ -59,7 +59,7 @@ public class Tabuleiro {
         }
     }
 
-    public boolean check(int linha, int coluna, String corAtacante) {
+    public boolean check(int linha, int coluna, String corAtacante, boolean checandoMovimentoDoRei) {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 Peca peca = tabuleiro[i][j];
@@ -75,14 +75,20 @@ public class Tabuleiro {
                     } else if (peca instanceof BoboDaCorte) {
                         BoboDaCorte bobo = (BoboDaCorte) peca;
                         String modoOriginal = bobo.getModoAtual();
-                        List<String> listaDeModosBoboAtual = bobo.getListaModosBobo();
+                        if (checandoMovimentoDoRei) {
+                            List<String> listaDeModosBoboAtual = bobo.getListaModosBobo();
 
-                        for (String modo : listaDeModosBoboAtual) {
-                            bobo.setModo(modo); // Altera o modo temporariamente
-                            // Verifica se o Bobo, neste modo, pode atacar o Rei
+                            for (String modo : listaDeModosBoboAtual) {
+                                bobo.setModo(modo); // Altera o modo temporariamente
+                                // Verifica se o Bobo, neste modo, pode atacar o Rei
+                                if (bobo.isMovimentoValido(this, i, j, linha, coluna)) {
+                                    bobo.setModo(modoOriginal); // Restaura o modo original
+                                    return true; // Rei está em cheque
+                                }
+                            }
+                        } else {
                             if (bobo.isMovimentoValido(this, i, j, linha, coluna)) {
-                                bobo.setModo(modoOriginal); // Restaura o modo original
-                                return true; // Rei está em cheque
+                                return true;
                             }
                         }
                     } else {
