@@ -323,6 +323,7 @@ public class HelloController implements Initializable {
 
                 if (pecaSelecionada instanceof Ladrao && foiCaptura) {
                     mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
+                    trocarTurno();
                 } else {
                     trocarTurno();
                 }
@@ -364,10 +365,10 @@ public class HelloController implements Initializable {
 
         String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
 
-        // Passo 3: O movimento só é legal se o Rei NÃO estiver sob ataque na simulação.
         if (pecaSelecionada instanceof Rei) {
             return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente, true);
         }
+        // Passo 3: O movimento só é legal se o Rei NÃO estiver sob ataque na simulação.
         return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente, false);
     }
 
@@ -440,10 +441,19 @@ public class HelloController implements Initializable {
     }
 
     private void verificarFimDeJogo() {
+        String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
+        if (jogoDeXadrez.encontrarRei(turnoAtual) == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Fim de Jogo!");
+            alert.setHeaderText("REI CAPTURADO!");
+            String vencedor = corDoOponente.substring(0, 1).toUpperCase() + corDoOponente.substring(1);
+            alert.setContentText(vencedor + "s venceram!");
+            alert.showAndWait();
+        }
+
         if (!temMovimentoLegal(turnoAtual)) {
             this.jogoAcabou = true; // Trava o jogo
             int[] posRei = jogoDeXadrez.encontrarRei(turnoAtual);
-            String corDoOponente = turnoAtual.equals("branco") ? "preto" : "branco";
 
             if (jogoDeXadrez.check(posRei[0], posRei[1], corDoOponente, false)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -583,7 +593,9 @@ public class HelloController implements Initializable {
         // Estiliza a caixa de diálogo, se o arquivo CSS existir
         try {
             DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add(getClass().getResource("ladrao-dialog.css").toExternalForm());
+            dialogPane.getStylesheets().add(
+                    getClass().getResource("/ladrao-dialog.css").toExternalForm()
+            );
         } catch (Exception e) {
             System.out.println("Arquivo CSS do Ladrão não encontrado, usando estilo padrão.");
         }

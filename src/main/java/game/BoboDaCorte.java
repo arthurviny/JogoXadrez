@@ -239,7 +239,6 @@ public class BoboDaCorte extends Peca {
                     }
                 }
 
-                // --- Movimento de Captura na Diagonal ---
                 // Verifica se andou na diagonal (1 casa de lado e 1 para frente) e se há uma peça inimiga no destino
                 if (Math.abs(colunaInicial - colunaFinal) == 1 && (linhaInicial + direcao == linhaFinal)) {
                     if (pecaDestino != null && !pecaDestino.getCor().equals(this.getCor())) {

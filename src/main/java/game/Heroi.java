@@ -1,6 +1,6 @@
 package game;
 
-class Heroi extends Peca {
+public class Heroi extends Peca {
     private boolean reiEstaEmCheck = false;
     public int forca;
 

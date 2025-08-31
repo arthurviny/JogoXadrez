@@ -195,7 +195,7 @@ public class Tabuleiro {
             case "Bispo":
                 return new Bispo(cor);
             case "Principe":
-                return new Heroi(cor); // talvez você queira renomear Heroi -> Principe
+                return new Heroi(cor);
             case "Cavalo":
                 return new Cavalo(cor);
             case "Torre":
