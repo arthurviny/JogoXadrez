@@ -156,6 +156,29 @@ Agora, uma vez comentadas as funções principais do nosso controller que gerenc
 
 - `getPecasNoTabuleiro()`: Função *getter* que retorna todas as peças que estão no tabuleiro, importante para a criação do array de modos do bobo.
 
+# ☕ Java vs. 📜 JavaScript: Uma Análise Comparativa do Projeto
+Embora a lógica e as regras do "Xadrez 2" sejam as mesmas em ambas as versões do projeto, a implementação em Java (com JavaFX) e em JavaScript (para a web) revela diferenças fundamentais na filosofia das linguagens e seus ecossistemas, especialmente na aplicação dos pilares da Programação Orientada a Objetos.
 
+A principal distinção pode ser resumida em: Segurança em Tempo de Compilação (Java) vs. Flexibilidade em Tempo de Execução (JavaScript).
 
+## Herança: Contrato vs. Comportamento
+A base do projeto é uma classe Peca da qual todas as outras peças herdam.
 
+- Em Java: Foi utilizada uma abstract class Peca. A palavra-chave abstract funciona como um contrato forçado pelo compilador. Ela garante, antes mesmo de o programa rodar, que é impossível criar uma "Peça" genérica e obriga que toda subclasse (como Rei ou Templario) implemente o método isMovimentoValido.
+
+- Em JavaScript: A sintaxe de herança é visualmente similar (class Rei extends Peca), mas não existe o conceito de abstract nativamente. Para garantir que as subclasses implementem os métodos necessários, a prática comum é lançar um erro no método da classe mãe. Isso transfere a responsabilidade do compilador para o tempo de execução (runtime).
+
+## Polimorfismo: O Impacto da Tipagem
+O polimorfismo se manifesta de maneiras muito distintas devido à diferença fundamental entre tipagem estática e dinâmica.
+
+Coerção (Casting):
+
+- Em Java: Foi essencial usar o casting explícito: BoboDaCorte bobo = (BoboDaCorte) pecaSelecionada;. Devido à tipagem estática, o compilador só "enxerga" o tipo da variável (Peca) e precisa ser instruído a tratá-la como sua subclasse para acessar métodos específicos.
+
+- Em JavaScript: Este conceito é praticamente inexistente. Com a tipagem dinâmica, um objeto é o que ele é. A variável guarda o objeto BoboDaCorte completo, e podemos chamar seus métodos diretamente, geralmente após uma verificação com instanceof, sem necessidade de "converter" o tipo
+
+## Encapsulamento: Privacidade Real vs. Convenções
+
+- Em Java: O acesso é rigorosamente controlado pelas palavras-chave private, protected e public. É um pilar reforçado pela própria linguagem, garantindo que o estado interno dos objetos seja protegido.
+
+- Em JavaScript: Historicamente, a privacidade era mantida por convenção, usando um underscore (_) para sinalizar que uma propriedade não deveria ser acessada de fora. Versões modernas da linguagem introduziram propriedades verdadeiramente privadas com o uso do # (cerquilha), tornando o encapsulamento em JS muito mais próximo do que se vê em Java.
