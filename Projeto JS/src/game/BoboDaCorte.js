@@ -3,7 +3,7 @@ import { Peca } from './Peca.js';
 // Importa as classes cujos movimentos estáticos podem ser reutilizados
 import { Torre } from './Torre.js';
 import { Bispo } from './Bispo.js';
-import { Rainha } from './Rainha.js';
+
 
 export class BoboDaCorte extends Peca {
     constructor(cor) {
@@ -44,7 +44,7 @@ export class BoboDaCorte extends Peca {
         switch (this.modoAtual) {
             case "Rainha":
                 // Reutilizando a lógica estática da Rainha para manter o código limpo
-                return Rainha.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor());
+                return Torre.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor()) || Bispo.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor())
 
             case "Rei":
                 return diffLinha <= 1 && diffColuna <= 1;
@@ -65,8 +65,6 @@ export class BoboDaCorte extends Peca {
                 return false;
             
             case "Templario":
-            case "Principe": // Juntando os dois, já que o movimento do seu Templario era o do Principe/Heroi
-                 // REGRA 1: Movimento vertical de até 4 casas
                 if (colunaInicial === colunaFinal && (diffLinha > 0 && diffLinha <= 4)) {
                     const passo = (linhaFinal > linhaInicial) ? 1 : -1;
                     for (let i = linhaInicial + passo; i !== linhaFinal; i += passo) {
@@ -82,7 +80,24 @@ export class BoboDaCorte extends Peca {
                     return true;
                 }
                 return false;
+            case "Principe": 
+                const pecaDestino = tabuleiro.getPeca(linhaFinal, colunaFinal);
+        if (pecaDestino !== null && pecaDestino.getCor() === this.getCor()) {
+            return false;
+        }
 
+        if (diffLinha <= 1 && diffColuna <= 1 && (diffLinha + diffColuna > 0)) {
+            return true;
+        }
+
+        
+        if (diffLinha === 2 && diffColuna === 0) {
+            const passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
+            
+            if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) === null) {
+                return true; // Caminho livre
+            }
+        }
             case "Torre":
                 return Torre.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor());
 
@@ -90,6 +105,7 @@ export class BoboDaCorte extends Peca {
                 return Bispo.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor());
 
             case "Peao":
+            
                 const direcao = this.getCor() === "branco" ? -1 : 1;
                 if (colunaInicial === colunaFinal && pecaDestino === null) {
                     if (linhaInicial + direcao === linhaFinal) return true;

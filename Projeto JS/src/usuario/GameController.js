@@ -8,7 +8,6 @@ import { Ladrao } from '../game/Ladrao.js';
 export class GameController {
 
     constructor(rootElementId) {
-        console.log("GameController.constructor() foi chamado.");
         this.rootElement = document.getElementById(rootElementId);
         if (!this.rootElement) {
             throw new Error(`Elemento raiz com id '${rootElementId}' não foi encontrado.`);
@@ -35,7 +34,6 @@ export class GameController {
 
     
     iniciar() {
-        console.log("GameController.iniciar() foi chamado. Prestes a desenhar o tabuleiro.");
         this.desenharTabuleiro()
         this.atualizarTituloDaJanela();
     }
