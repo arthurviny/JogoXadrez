@@ -4,6 +4,7 @@ export class MenuController {
     /**
      * @param {string} rootElementId
      */
+    
     constructor(rootElementId) {
         this.rootElement = document.getElementById(rootElementId);
         if (!this.rootElement) {

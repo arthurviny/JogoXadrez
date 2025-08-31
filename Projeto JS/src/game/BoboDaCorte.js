@@ -40,10 +40,9 @@ export class BoboDaCorte extends Peca {
         const diffLinha = Math.abs(linhaFinal - linhaInicial);
         const diffColuna = Math.abs(colunaFinal - colunaInicial);
 
-        // A estrutura switch é idêntica em JavaScript
         switch (this.modoAtual) {
             case "Rainha":
-                // Reutilizando a lógica estática da Rainha para manter o código limpo
+                
                 return Torre.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor()) || Bispo.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor())
 
             case "Rei":
@@ -72,7 +71,7 @@ export class BoboDaCorte extends Peca {
                     }
                     return true;
                 }
-                // REGRA 2: Movimento especial (3 vertical, 1 horizontal) SEM PULAR
+                
                 if (diffLinha === 3 && diffColuna === 1) {
                     const passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
                     if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) !== null) return false;
@@ -95,7 +94,7 @@ export class BoboDaCorte extends Peca {
             const passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
             
             if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) === null) {
-                return true; // Caminho livre
+                return true; 
             }
         }
             case "Torre":
@@ -116,7 +115,7 @@ export class BoboDaCorte extends Peca {
                 return false;
 
             default:
-                // Retorna falso para o modo "nulo" ou qualquer outro modo desconhecido.
+                
                 return false; 
         }
     }

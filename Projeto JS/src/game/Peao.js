@@ -29,7 +29,6 @@ export class Peao extends Peca {
 
         if (Math.abs(colunaInicial - colunaFinal) === 1 && (linhaInicial + direcao === linhaFinal)) {
             
-            // A casa de destino DEVE ter uma peça inimiga.
             if (pecaDestino !== null && pecaDestino.getCor() !== this.getCor()) {
                 return true;
             }

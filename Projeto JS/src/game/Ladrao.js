@@ -26,9 +26,9 @@ export class Ladrao extends Peca {
                 const passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
                 const passoColuna = (colunaFinal > colunaInicial) ? 1 : -1;
 
-                // Verifica a casa intermediária.
+               
                 if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial + passoColuna) !== null) {
-                    return false; // Caminho bloqueado.
+                    return false; 
                 }
             }
 
