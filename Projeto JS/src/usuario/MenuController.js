@@ -22,7 +22,7 @@ export class MenuController {
         // 3. Cria o título do jogo
         const titulo = document.createElement('h1');
         titulo.classList.add('menu-titulo');
-        titulo.textContent = 'Xadrez Fantástico';
+        titulo.textContent = 'Xadrez 2';
 
         // 4. Cria o botão "Jogar"
         const playButton = document.createElement('button');

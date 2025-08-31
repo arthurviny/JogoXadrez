@@ -8,42 +8,79 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Garante que o corpo ocupe a tela toda */
+    min-height: 100vh;
     background-color: #333;
-    padding: 20px; /* Adiciona um respiro em telas menores */
+    padding: 20px;
+    font-family: 'Merriweather', serif;
 }
+
+
+#game-container.menu-container {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;    
+    width: 100%;
+    height: 100%;
+    
+    
+    background-image: url('../images/ImagemFundoXadrezTres.png');
+    background-size: cover; 
+    background-position: center; /* Centraliza a imagem */
+}
+
+.menu-titulo {
+    font-size: 5rem; /* Aumentei um pouco para mais impacto */
+    color: white;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px; /* Reduzi a margem de baixo para controlar com a de cima do botão */
+}
+
+.menu-botao-jogar {
+    font-size: 24px;
+    padding: 15px 40px;
+    color: white;
+    background-color: #769656;
+    border: 2px solid #5a7b41;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease-in-out;
+    
+    /* CORREÇÃO DA POSIÇÃO DO BOTÃO */
+    margin-top: 50px; /* Adiciona um espaço EM CIMA do botão, empurrando-o para baixo */
+}
+
+.menu-botao-jogar:hover {
+    background-color: #8ab066;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
 
 #game-container {
     display: grid;
-    grid-template-columns: repeat(8, 1fr); /* 8 colunas de largura igual */
-    grid-template-rows: repeat(8, 1fr);    
-
-   
-    width: 90vmin; /* 90% da menor dimensão da tela (altura ou largura) */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: 90vmin;
     height: 90vmin;
-    max-width: 800px; /* Limite máximo de tamanho */
+    max-width: 800px;
     max-height: 800px;
-
     aspect-ratio: 1 / 1;
-
     border: 5px solid #4a2323;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
 }
-
 
 .cell {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    position: relative; /* Necessário para posicionar os indicadores */
+    position: relative;
 }
 
 .light { background-color: #eeeed2; }
 .dark { background-color: #673166; }
 
-/* Estilo para as imagens das peças */
 .cell img {
     width: 85%;
     height: 85%;
@@ -52,18 +89,16 @@ body {
 }
 
 
-
 .selecionada {
-   
     outline: 4px solid #ffdd44;
-    outline-offset: -4px; /* Coloca o contorno para dentro */
+    outline-offset: -4px;
 }
 
 .move-indicator {
-    width: 35%; /* Usa porcentagem para ser responsivo */
+    width: 35%;
     height: 35%;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
-    /* Garante que o indicador não afete o layout */
-    position: absolute; 
+    position: absolute;
+    pointer-events: none;
 }

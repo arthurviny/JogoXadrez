@@ -60,62 +60,58 @@ export class GameController {
     }
 
     handlePrimaryClick(cell, linha, coluna) {
-        if (this.pecaSelecionada === null) {
-            const pecaClicada = this.jogoDeXadrez.getPeca(linha, coluna);
-            if (pecaClicada && pecaClicada.getCor() === this.turnoAtual) {
-                this.pecaSelecionada = pecaClicada;
-                this.cellSelecionada = cell;
-                this.desenharTabuleiro(); // Redesenha para limpar destaques antigos
-                this.mostrarMovimentosValidos(linha, coluna);
-                // Encontra a célula recém-desenhada para aplicar o estilo
-                const novaCellSelecionada = this.rootElement.querySelector(`[data-row='${linha}'][data-col='${coluna}']`);
-                if (novaCellSelecionada) novaCellSelecionada.classList.add('selecionada');
-            }
-        } else {
-            const linhaInicial = parseInt(this.cellSelecionada.dataset.row);
-            const colunaInicial = parseInt(this.cellSelecionada.dataset.col);
+    
+    if (this.pecaSelecionada === null) {
+        const pecaClicada = this.jogoDeXadrez.getPeca(linha, coluna);
+        if (pecaClicada && pecaClicada.getCor() === this.turnoAtual) {
+            this.pecaSelecionada = pecaClicada;
+            this.cellSelecionada = cell;
 
-            if (this.isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
-                const pecaMovida = this.jogoDeXadrez.getPeca(linhaInicial, colunaInicial);
-                const pecaNoDestino = this.jogoDeXadrez.getPeca(linha, coluna);
-                const foiCaptura = pecaNoDestino !== null;
-
-                this.jogoDeXadrez.moverPeca(linhaInicial, colunaInicial, linha, coluna);
-                
-                // Lógicas especiais pós-movimento
-                if (pecaMovida instanceof Peao && (linha === 0 || linha === 7)) {
-                    this.modularPromocao(pecaMovida, linha, coluna);
-                }
-                
-                if (pecaMovida instanceof BoboDaCorte) {
-                    const bobo = pecaMovida;
-                    const modoUsado = bobo.getModoAtual();
-                    const listaDeModos = (bobo.getCor() === "branco") ? this.pecasDisponiveisBoboBranco : this.pecasDisponiveisBoboPreto;
-                    
-                    const index = listaDeModos.indexOf(modoUsado);
-                    if (index > -1) listaDeModos.splice(index, 1);
-
-                    if (listaDeModos.length === 0) {
-                        if (bobo.getCor() === "branco") this.pecasDisponiveisBoboBranco = [...this.copiaPecasBobo];
-                        else this.pecasDisponiveisBoboPreto = [...this.copiaPecasBobo];
-                    }
-                    bobo.setModo("nulo");
-                }
-
-                if (pecaMovida instanceof Ladrao && foiCaptura) {
-                    this.mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
-                } else {
-                    this.trocarTurno();
-                }
-
-            } else {
-                alert("Movimento Ilegal!");
-            }
-            
-            this.deselecionarPeca();
-            this.desenharTabuleiro();
+            // NÃO redesenhamos mais o tabuleiro aqui.
+            // Apenas adicionamos os destaques visuais.
+            cell.classList.add('selecionada');
+            this.mostrarMovimentosValidos(linha, coluna);
         }
+    } 
+   
+    else {
+        const linhaInicial = parseInt(this.cellSelecionada.dataset.row);
+        const colunaInicial = parseInt(this.cellSelecionada.dataset.col);
+
+       
+        if (linhaInicial === linha && colunaInicial === coluna) {
+            this.deselecionarPeca();
+            this.desenharTabuleiro(); 
+            return;
+        }
+
+        if (this.isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
+            const pecaMovida = this.jogoDeXadrez.getPeca(linhaInicial, colunaInicial);
+            const pecaNoDestino = this.jogoDeXadrez.getPeca(linha, coluna);
+            const foiCaptura = pecaNoDestino !== null;
+
+            this.jogoDeXadrez.moverPeca(linhaInicial, colunaInicial, linha, coluna);
+            
+            // Lógica de troca de turno (agora usando if/else if/else)
+            const ehPeaoPromovendo = pecaMovida instanceof Peao && (linha === 0 || linha === 7);
+            const ehLadraoComCaptura = pecaMovida instanceof Ladrao && foiCaptura;
+
+            if (ehPeaoPromovendo) {
+                this.modularPromocao(pecaMovida, linha, coluna);
+            } else if (ehLadraoComCaptura) {
+                this.mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
+            } else {
+                this.trocarTurno();
+            }
+
+        } else {
+            alert("Movimento Ilegal!");
+        }
+        
+        this.deselecionarPeca();
+        this.desenharTabuleiro();
     }
+}
 
     handleSecondaryClick(linha, coluna) {
         const pecaClicada = this.jogoDeXadrez.getPeca(linha, coluna);
@@ -318,20 +314,19 @@ export class GameController {
 
             // Se existe algo na casa, tentamos desenhar
             if (peca) {
-                // O TRY...CATCH VAI CAPTURAR O ERRO
+               
                 try {
                     const pecaImage = document.createElement('img');
-                    // A linha abaixo é a que estava dando o erro
+                    
                     pecaImage.src = `./assets/images/${peca.getCor()}/${peca.getNomePeca()}.png`;
                     cellElement.appendChild(pecaImage);
                 } catch (error) {
-                    // SE O ERRO ACONTECER, O CATCH É EXECUTADO
+                    
                     console.error(`--- ERRO AO DESENHAR PEÇA ---`);
                     console.error(`Posição do Erro: linha=${row}, coluna=${col}`);
                     console.error(`Conteúdo da célula que causou o erro:`, peca);
                     console.error(`Mensagem de erro original:`, error);
                     
-                    // Para feedback visual, desenha um X vermelho na casa com problema
                     cellElement.innerHTML = '<span style="color: red; font-size: 40px; font-weight: bold;">X</span>';
                 }
             }
@@ -343,25 +338,24 @@ export class GameController {
 }
 
     mostrarMovimentosValidos(linhaOrigem, colunaOrigem) {
-        const cells = Array.from(this.rootElement.children);
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if (this.isMovimentoLegal(linhaOrigem, colunaOrigem, i, j)) {
-                    const index = i * 8 + j;
-                    if(cells[index]) {
-                        const indicador = document.createElement('div');
-                        indicador.classList.add('move-indicator');
-                        cells[index].appendChild(indicador);
-                    }
+    // Garante que uma peça está selecionada antes de tentar mostrar os movimentos.
+    if (!this.pecaSelecionada) return;
+
+    const cells = Array.from(this.rootElement.children);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            // AQUI ESTÁ A MUDANÇA: Usamos isMovimentoLegal, que já usa this.pecaSelecionada
+            if (this.isMovimentoLegal(linhaOrigem, colunaOrigem, i, j)) {
+                const index = i * 8 + j;
+                if(cells[index]) {
+                    const indicador = document.createElement('div');
+                    indicador.classList.add('move-indicator');
+                    cells[index].appendChild(indicador);
                 }
             }
         }
     }
-    
-    deselecionarPeca() {
-        this.pecaSelecionada = null;
-        this.cellSelecionada = null;
-    }
+}
 
     atualizarTituloDaJanela() {
         const corCapitalizada = this.turnoAtual === "branco" ? "Brancas" : "Pretas"
