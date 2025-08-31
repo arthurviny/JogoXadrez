@@ -27,6 +27,10 @@ Foi com essa mentalidade que criamos o **Xadrez 2**, o possível sucessor do xad
 
 ## 🎭 Bobo da Corte
 
+| Peça | Movimentação |
+|------|-------------|
+| ![Bobo da Corte](./images/BoboDaCorte.png) | ![Movimentação Bobo](./images/mov_bobo.png) |
+
 Na corte do reino, o Bobo da Corte é um mestre do caos e da imprevisibilidade.  
 Ele brinca com a lógica e a ordem, rindo da honra da nobreza e trazendo uma pitada de loucura à seriedade do jogo.
 
@@ -43,6 +47,10 @@ Caso o Rei esteja em **check**, a GUI mostrará somente as peças que possam imp
 
 ## ✝️ Templário
 
+| Peça | Movimentação |
+|------|-------------|
+| ![Templário](./images/Templario.png) | ![Movimentação Templário](./images/mov_templario.png) |
+
 Poderosa ordem militar católica da Idade Média, criada para proteger os peregrinos cristãos na Terra Santa durante as Cruzadas.  
 Extremamente influentes e icônicos na época, agora também presentes no tabuleiro.
 
@@ -52,6 +60,10 @@ Extremamente influentes e icônicos na época, agora também presentes no tabule
 ---
 
 ## 🕵️ Ladrão
+
+| Peça | Movimentação |
+|------|-------------|
+| ![Ladrão](./images/Ladrao.png) | ![Movimentação Ladrão](./images/mov_ladrao.png) |
 
 O Ladrão é uma figura astuta que vive nas sombras do reino.  
 Sem honra ou nobreza, despreza a batalha direta, mas, quando consegue o que quer, foge rapidamente para garantir sua sobrevivência.
@@ -63,6 +75,10 @@ Sem honra ou nobreza, despreza a batalha direta, mas, quando consegue o que quer
 ---
 
 ## 🛡️ Herói
+
+| Peça | Movimentação |
+|------|-------------|
+| ![Herói](./images/Heroi.png) | ![Movimentação Herói](./images/mov_heroi.png) |
 
 O Herói é um cavaleiro honrado que vive para proteger o seu reino e o seu Rei.  
 Sua força reside em sua lealdade, e ele luta com uma fúria incontrolável quando seu rei se encontra em perigo.
@@ -76,5 +92,3 @@ Sua força reside em sua lealdade, e ele luta com uma fúria incontrolável quan
 ## 💻 Xadrez e a Programação Orientada a Objetos
 
 Este projeto foi desenvolvido aplicando conceitos de **POO (Programação Orientada a Objetos)** para estruturar as peças, regras e mecânicas do Xadrez 2, explorando herança, polimorfismo e encapsulamento de forma prática.
-
----
