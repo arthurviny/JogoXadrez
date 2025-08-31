@@ -11,18 +11,17 @@
     z-index: 1000;
 }
 
-/* Deixa o popup invisível por padrão */
 .hidden {
     display: none;
 }
 
-/* A caixa de diálogo em si */
+
 .ladrao-dialog-content {
-    background-color: #2b2b2b; /* Cinza bem escuro */
+    background-color: #2b2b2b; 
     color: #e0e0e0;
     padding: 25px;
     border-radius: 10px;
-    border: 2px solid #6d1a1a; /* Vermelho escuro "sangue" */
+    border: 2px solid #6d1a1a; 
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
     text-align: center;
     max-width: 350px;
@@ -31,7 +30,7 @@
 .ladrao-dialog-content h3 {
     margin-top: 0;
     font-size: 22px;
-    color: #d4a00f; /* Dourado/amarelo */
+    color: #d4a00f; 
     text-shadow: 1px 1px 3px #000;
 }
 
@@ -40,10 +39,9 @@
     margin-bottom: 25px;
 }
 
-/* Contêiner para os botões */
 .botoes-dialogo {
     display: flex;
-    justify-content: space-around; /* Espaça os botões */
+    justify-content: space-around; 
 }
 
 .botoes-dialogo button {
@@ -58,7 +56,7 @@
     transition: all 0.2s ease;
 }
 
-/* Estilo do botão de confirmação */
+
 #botao-recuar-sim {
     background-color: #769656; 
 }
@@ -66,9 +64,8 @@
     background-color: #8ab066;
 }
 
-/* Estilo do botão de negação */
 #botao-recuar-nao {
-    background-color: #6d1a1a; /* Vermelho escuro */
+    background-color: #6d1a1a; 
 }
 #botao-recuar-nao:hover {
     background-color: #8b2a2a;

@@ -26,33 +26,33 @@ body {
     
     background-image: url('../images/ImagemFundoXadrezTres.png');
     background-size: cover; 
-    background-position: center; /* Centraliza a imagem */
+    background-position: center; 
 }
 
 .menu-titulo {
-    font-size: 5rem; /* Aumentei um pouco para mais impacto */
+    font-size: 5rem;
     color: white;
     text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
-    margin-bottom: 20px; /* Reduzi a margem de baixo para controlar com a de cima do botão */
+    margin-bottom: 20px; 
 }
 
 .menu-botao-jogar {
     font-size: 24px;
     padding: 15px 40px;
     color: white;
-    background-color: #769656;
-    border: 2px solid #5a7b41;
+    background-color: #8d18c7;
+    border: 2px solid #520a60;
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease-in-out;
     
-    /* CORREÇÃO DA POSIÇÃO DO BOTÃO */
-    margin-top: 50px; /* Adiciona um espaço EM CIMA do botão, empurrando-o para baixo */
+  
+    margin-top: 50px; 
 }
 
 .menu-botao-jogar:hover {
-    background-color: #8ab066;
+    background-color: #6b1493;
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }

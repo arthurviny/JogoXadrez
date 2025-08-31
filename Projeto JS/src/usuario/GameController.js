@@ -20,7 +20,6 @@ export class GameController {
         this.turnoAtual = "branco";
         this.jogoAcabou = false;
 
-        // --- LÓGICA DAS LISTAS PARA PEÇAS ESPECIAIS (TRADUZIDA DO JAVA) ---
         const todasAsPecasBase = this.jogoDeXadrez.getPecasNoTabuleiro();
         
         // Lista para as opções de promoção do Peão
@@ -29,16 +28,15 @@ export class GameController {
         // Lista base para os modos do Bobo da Corte
         const modosIniciaisDoBobo = todasAsPecasBase.filter(p => p !== "BoboDaCorte");
         
-        // Cria uma cópia para cada cor
         this.pecasDisponiveisBoboBranco = [...modosIniciaisDoBobo];
         this.pecasDisponiveisBoboPreto = [...modosIniciaisDoBobo];
         this.copiaPecasBobo = [...modosIniciaisDoBobo]; // Cópia de segurança para resetar o ciclo
     }
 
-    // Inicia o jogo, desenhando o tabuleiro e configurando o título
+    
     iniciar() {
         console.log("GameController.iniciar() foi chamado. Prestes a desenhar o tabuleiro.");
-        this.desenharTabuleiro();
+        this.desenharTabuleiro()
         this.atualizarTituloDaJanela();
     }
 
@@ -54,23 +52,23 @@ export class GameController {
         if (event.button === 0) { // Botão Esquerdo
             this.handlePrimaryClick(cellElement, linha, coluna);
         } else if (event.button === 2) { // Botão Direito
-            event.preventDefault(); // Impede o menu de contexto do navegador
+            event.preventDefault(); 
             this.handleSecondaryClick(linha, coluna);
         }
     }
 
-    handlePrimaryClick(cell, linha, coluna) {
-    
+   handlePrimaryClick(cell, linha, coluna) {
+    if (this.jogoAcabou) return;
+
     if (this.pecaSelecionada === null) {
         const pecaClicada = this.jogoDeXadrez.getPeca(linha, coluna);
         if (pecaClicada && pecaClicada.getCor() === this.turnoAtual) {
             this.pecaSelecionada = pecaClicada;
             this.cellSelecionada = cell;
-
-            // NÃO redesenhamos mais o tabuleiro aqui.
-            // Apenas adicionamos os destaques visuais.
-            cell.classList.add('selecionada');
+            this.desenharTabuleiro();
             this.mostrarMovimentosValidos(linha, coluna);
+            const novaCellSelecionada = this.rootElement.querySelector(`[data-row='${linha}'][data-col='${coluna}']`);
+            if (novaCellSelecionada) novaCellSelecionada.classList.add('selecionada');
         }
     } 
    
@@ -78,21 +76,23 @@ export class GameController {
         const linhaInicial = parseInt(this.cellSelecionada.dataset.row);
         const colunaInicial = parseInt(this.cellSelecionada.dataset.col);
 
-       
-        if (linhaInicial === linha && colunaInicial === coluna) {
-            this.deselecionarPeca();
-            this.desenharTabuleiro(); 
-            return;
-        }
-
+    
         if (this.isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
+            
+            
+            
             const pecaMovida = this.jogoDeXadrez.getPeca(linhaInicial, colunaInicial);
             const pecaNoDestino = this.jogoDeXadrez.getPeca(linha, coluna);
             const foiCaptura = pecaNoDestino !== null;
 
             this.jogoDeXadrez.moverPeca(linhaInicial, colunaInicial, linha, coluna);
             
-            // Lógica de troca de turno (agora usando if/else if/else)
+         
+            if (pecaMovida instanceof BoboDaCorte) {
+                
+            }
+
+            
             const ehPeaoPromovendo = pecaMovida instanceof Peao && (linha === 0 || linha === 7);
             const ehLadraoComCaptura = pecaMovida instanceof Ladrao && foiCaptura;
 
@@ -101,18 +101,20 @@ export class GameController {
             } else if (ehLadraoComCaptura) {
                 this.mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
             } else {
+                // Para todos os outros movimentos NORMAIS e LEGAIS, troca o turno.
                 this.trocarTurno();
             }
 
         } else {
+            
             alert("Movimento Ilegal!");
         }
+        
         
         this.deselecionarPeca();
         this.desenharTabuleiro();
     }
 }
-
     handleSecondaryClick(linha, coluna) {
         const pecaClicada = this.jogoDeXadrez.getPeca(linha, coluna);
         if (pecaClicada instanceof BoboDaCorte && pecaClicada.getCor() === this.turnoAtual) {
@@ -123,16 +125,37 @@ export class GameController {
     // ver se pode andar e final do jogo
 
     isMovimentoLegal(linhaInicial, colunaInicial, linhaFinal, colunaFinal) {
-        if (!this.pecaSelecionada.isMovimentoValido(this.jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal)) {
-            return false;
-        }
-        const tabuleiroSimulado = this.jogoDeXadrez.clonar();
-        tabuleiroSimulado.moverPeca(linhaInicial, colunaInicial, linhaFinal, colunaFinal);
-        const posRei = tabuleiroSimulado.encontrarRei(this.turnoAtual);
-        if (posRei === null) return true;
-        const corDoOponente = this.turnoAtual === "branco" ? "preto" : "branco";
-        return !tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente);
+    const peca = this.pecaSelecionada;
+    
+    const movimentoGeometricoValido = peca.isMovimentoValido(this.jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal);
+    
+    if (!movimentoGeometricoValido) {
+        return false; 
     }
+    
+    console.log(`%cChecando Legalidade: ${peca.getNomePeca()} de (${linhaInicial},${colunaInicial}) para (${linhaFinal},${colunaFinal})`, 'color: cyan;');
+
+    // Este movimento deixa o meu Rei em cheque?
+    const tabuleiroSimulado = this.jogoDeXadrez.clonar();
+    tabuleiroSimulado.moverPeca(linhaInicial, colunaInicial, linhaFinal, colunaFinal);
+    
+    const posRei = tabuleiroSimulado.encontrarRei(this.turnoAtual);
+    if (posRei === null) {
+        console.warn("AVISO: Rei não encontrado na simulação. Permitindo movimento por segurança.");
+        return true; 
+    }
+
+    const corDoOponente = this.turnoAtual === "branco" ? "preto" : "branco";
+    const reiFicaEmCheque = tabuleiroSimulado.check(posRei[0], posRei[1], corDoOponente);
+
+    if (reiFicaEmCheque) {
+        return false;
+    } else {
+        
+        return true;
+    }
+}
+
 
     temMovimentoLegal(corDoJogador) {
         for (let i = 0; i < 8; i++) {
@@ -204,14 +227,12 @@ export class GameController {
                 this.jogoDeXadrez.setFuriaHeroi(posHeroi[0], posHeroi[1], reiEmCheck);
             }
         }
-
+        this.desenharTabuleiro()
         this.verificarFimDeJogo();
     }
-    
-    // --- MÉTODOS DE UI (DESENHO E POPUPS) ---
 
     modularPromocao(peao, linha, coluna) {
-        // No HTML, você precisaria ter um <div id="popup-promocao" class="popup hidden"></div>
+        
         const popupElement = document.getElementById('popup-promocao');
         const popupContent = popupElement.querySelector('.popup-content');
         if (!popupElement || !popupContent) return;
@@ -225,18 +246,18 @@ export class GameController {
             img.addEventListener('click', () => {
                 const pecaEscolhida = this.jogoDeXadrez.criarPeca(pecaPromover, peao.getCor());
                 this.jogoDeXadrez.setPeca(linha, coluna, pecaEscolhida);
-                popupElement.classList.add('hidden'); // Esconde o popup
+                popupElement.classList.add('hidden');
                 this.desenharTabuleiro();
-                this.trocarTurno(); // Troca o turno após a promoção
+                this.trocarTurno(); 
             });
             popupContent.appendChild(img);
         });
 
-        popupElement.classList.remove('hidden'); // Mostra o popup
+        popupElement.classList.remove('hidden'); 
     }
 
     modularBobo(bobo, linha, coluna) {
-        // Similar à promoção, usaria um <div id="popup-bobo" class="popup hidden"></div>
+        
         const popupElement = document.getElementById('popup-bobo');
         const popupContent = popupElement.querySelector('.popup-content');
         if (!popupElement || !popupContent) return;
@@ -251,8 +272,8 @@ export class GameController {
             img.addEventListener('click', () => {
                 this.jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
                 popupElement.classList.add('hidden');
-                this.desenharTabuleiro(); // Redesenha para limpar o destaque
-                this.mostrarMovimentosValidos(linha, coluna); // Mostra os novos movimentos
+                this.desenharTabuleiro(); 
+                this.mostrarMovimentosValidos(linha, coluna); 
         
                 const novaCellSelecionada = this.rootElement.querySelector(`[data-row='${linha}'][data-col='${coluna}']`);
                 if (novaCellSelecionada) novaCellSelecionada.classList.add('selecionada');
@@ -338,16 +359,24 @@ export class GameController {
 }
 
     mostrarMovimentosValidos(linhaOrigem, colunaOrigem) {
-    // Garante que uma peça está selecionada antes de tentar mostrar os movimentos.
-    if (!this.pecaSelecionada) return;
+    console.log(`--- Buscando movimentos para a peça em (${linhaOrigem}, ${colunaOrigem}) ---`);
+    if (!this.pecaSelecionada) {
+        console.error("ERRO GRAVE: Tentou mostrar movimentos, mas nenhuma peça está selecionada.");
+        return;
+    }
+
+    document.querySelectorAll('.move-indicator').forEach(el => el.remove());
 
     const cells = Array.from(this.rootElement.children);
+    let movimentosEncontrados = 0; // Um contador para sabermos se algo foi encontrado
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            // AQUI ESTÁ A MUDANÇA: Usamos isMovimentoLegal, que já usa this.pecaSelecionada
+            // Chama a nossa função de validação completa
             if (this.isMovimentoLegal(linhaOrigem, colunaOrigem, i, j)) {
+                movimentosEncontrados++; // Encontrou um!
                 const index = i * 8 + j;
-                if(cells[index]) {
+                if (cells[index]) {
                     const indicador = document.createElement('div');
                     indicador.classList.add('move-indicator');
                     cells[index].appendChild(indicador);
@@ -355,11 +384,22 @@ export class GameController {
             }
         }
     }
+    
 }
 
     atualizarTituloDaJanela() {
         const corCapitalizada = this.turnoAtual === "branco" ? "Brancas" : "Pretas"
         document.title = `XXXadrez! - Vez das ${corCapitalizada}`;
     }
+
+    deselecionarPeca() {
+    if (this.cellSelecionada) {
+        this.cellSelecionada.classList.remove('selecionada');
+    }
+    document.querySelectorAll('.move-indicator').forEach(el => el.remove());
+
+    this.pecaSelecionada = null;
+    this.cellSelecionada = null;
+}
 
 }
