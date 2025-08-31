@@ -35,7 +35,7 @@ public class Peao extends Peca {
             }
         }
 
-        return false; // Para todos os outros casos, o movimento é inválido
+        return false;
     }
 
     @Override

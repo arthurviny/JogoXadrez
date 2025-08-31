@@ -33,7 +33,6 @@ public class BoboDaCorte extends Peca {
     @Override
     public boolean isMovimentoValido(Tabuleiro tabuleiro, int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
 
-        // 1. Verificação de Peca Destino (pode ser feita uma vez)
         Peca pecaDestino = tabuleiro.getPeca(linhaFinal, colunaFinal);
         if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
             return false;
@@ -42,7 +41,7 @@ public class BoboDaCorte extends Peca {
         int diffLinha = Math.abs(linhaFinal - linhaInicial);
         int diffColuna = Math.abs(colunaFinal - colunaInicial);
 
-        // 2. Lógica de movimento baseada no modo
+        // Vai depender da escolha
         switch(this.modoAtual) {
             case "Rainha": {
                 // A Rainha pode se mover como uma Torre OU como um Bispo
@@ -130,22 +129,18 @@ public class BoboDaCorte extends Peca {
                     return true;
                 }
 
-                // --- REGRA 2: Movimento especial (3 vertical, 1 horizontal) SEM PULAR ---
                 if (diffLinha == 3 && diffColuna == 1) {
-                    // Este movimento NÃO pula peças. Verificamos as duas casas no caminho vertical.
+        
                     int passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
 
-                    // Verifica a primeira casa no caminho vertical
                     if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) != null) {
-                        return false; // Caminho bloqueado na primeira casa.
+                        return false; 
                     }
 
-                    // Verifica a segunda casa no caminho vertical
                     if (tabuleiro.getPeca(linhaInicial + (2 * passoLinha), colunaInicial) != null) {
-                        return false; // Caminho bloqueado na segunda casa.
+                        return false; 
                     }
 
-                    // Se o caminho vertical estiver livre, o movimento é válido.
                     return true;
                 }
 
@@ -167,7 +162,7 @@ public class BoboDaCorte extends Peca {
 
                     // Verifica a casa intermediária
                     if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) != null) {
-                        return false; // Caminho bloqueado, movimento inválido.
+                        return false; 
                     }
                     return true;
                 }
@@ -179,9 +174,9 @@ public class BoboDaCorte extends Peca {
                     return false;
                 }
 
-                // Regra 2: Movimento deve ser reto (na mesma linha ou mesma coluna).
+                // Movimento deve ser reto (na mesma linha ou mesma coluna).
                 if (linhaInicial != linhaFinal && colunaInicial != colunaFinal) {
-                    return false; // Se não for reto, é inválido.
+                    return false; 
                 }
 
                 // Movimento Vertical
