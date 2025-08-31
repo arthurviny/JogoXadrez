@@ -1,0 +1,68 @@
+body {
+    display: flex; justify-content: center; align-items: center;
+    height: 100vh; margin: 0; background-color: #333;
+}
+#game-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: 600px; height: 600px;
+    border: 5px solid #4a2323;
+}
+.cell {
+    display: flex; justify-content: center; align-items: center;
+    width: 100%; height: 100%;
+}
+.light { background-color: #eeeed2; }
+.dark { background-color: #673166; }
+.cell img {
+    width: 85%; height: 85%; object-fit: contain; pointer-events: none;
+}
+/* Estilos para feedback visual */
+.selecionada { border: 3px solid yellow; box-sizing: border-box; }
+.move-indicator {
+    width: 25px; height: 25px; background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+}
+/* Estilos para os Popups */
+.popup-container { position: fixed; /* ... outros estilos para o popup ... */ }
+.hidden { display: none; }
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/imagemFundoXadresDOIS.png'); /* Caminho relativo da imagem de fundo */
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.menu-titulo {
+    font-size: 4rem;
+    color: white;
+    font-family: 'Times New Roman', serif;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+    margin-bottom: 50px;
+}
+
+.menu-botao-jogar {
+    font-size: 24px;
+    padding: 15px 30px;
+    color: white;
+    background-color: #769656; /* Verde do seu projeto original */
+    border: 2px solid #5a7b41;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease-in-out;
+}
+
+.menu-botao-jogar:hover {
+    background-color: #8ab066;
+    transform: translateY(-3px); /* Efeito de "levantar" o botão */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}

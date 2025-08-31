@@ -8,6 +8,7 @@ import { Ladrao } from '../game/Ladrao.js';
 export class GameController {
 
     constructor(rootElementId) {
+        console.log("GameController.constructor() foi chamado.");
         this.rootElement = document.getElementById(rootElementId);
         if (!this.rootElement) {
             throw new Error(`Elemento raiz com id '${rootElementId}' não foi encontrado.`);
@@ -15,7 +16,7 @@ export class GameController {
 
         this.jogoDeXadrez = new Tabuleiro();
         this.pecaSelecionada = null;
-        this.cellSelecionada = null; // Guarda o elemento HTML da célula selecionada
+        this.cellSelecionada = null; 
         this.turnoAtual = "branco";
         this.jogoAcabou = false;
 
@@ -36,6 +37,7 @@ export class GameController {
 
     // Inicia o jogo, desenhando o tabuleiro e configurando o título
     iniciar() {
+        console.log("GameController.iniciar() foi chamado. Prestes a desenhar o tabuleiro.");
         this.desenharTabuleiro();
         this.atualizarTituloDaJanela();
     }
@@ -212,31 +214,133 @@ export class GameController {
     
     // --- MÉTODOS DE UI (DESENHO E POPUPS) ---
 
-    desenharTabuleiro() {
-        this.rootElement.innerHTML = '';
-        this.rootElement.style.display = 'grid';
-        this.rootElement.style.gridTemplateColumns = 'repeat(8, 1fr)';
+    modularPromocao(peao, linha, coluna) {
+        // No HTML, você precisaria ter um <div id="popup-promocao" class="popup hidden"></div>
+        const popupElement = document.getElementById('popup-promocao');
+        const popupContent = popupElement.querySelector('.popup-content');
+        if (!popupElement || !popupContent) return;
+        
+        popupContent.innerHTML = ''; // Limpa opções anteriores
 
-        const tabuleiroArray = this.jogoDeXadrez.getTabuleiro();
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 8; col++) {
-                const cellElement = document.createElement('div');
-                cellElement.classList.add('cell', (row + col) % 2 === 0 ? 'light' : 'dark');
-                cellElement.dataset.row = row;
-                cellElement.dataset.col = col;
+        this.pecasDePromocao.forEach(pecaPromover => {
+            const img = document.createElement('img');
+            img.src = `./assets/images/${peao.getCor()}/${pecaPromover}.png`;
+            img.dataset.peca = pecaPromover;
+            img.addEventListener('click', () => {
+                const pecaEscolhida = this.jogoDeXadrez.criarPeca(pecaPromover, peao.getCor());
+                this.jogoDeXadrez.setPeca(linha, coluna, pecaEscolhida);
+                popupElement.classList.add('hidden'); // Esconde o popup
+                this.desenharTabuleiro();
+                this.trocarTurno(); // Troca o turno após a promoção
+            });
+            popupContent.appendChild(img);
+        });
 
-                const peca = tabuleiroArray[row][col];
-                if (peca) {
+        popupElement.classList.remove('hidden'); // Mostra o popup
+    }
+
+    modularBobo(bobo, linha, coluna) {
+        // Similar à promoção, usaria um <div id="popup-bobo" class="popup hidden"></div>
+        const popupElement = document.getElementById('popup-bobo');
+        const popupContent = popupElement.querySelector('.popup-content');
+        if (!popupElement || !popupContent) return;
+
+        popupContent.innerHTML = '';
+        const modosDisponiveis = bobo.getCor() === 'branco' ? this.pecasDisponiveisBoboBranco : this.pecasDisponiveisBoboPreto;
+
+        modosDisponiveis.forEach(modo => {
+            const img = document.createElement('img');
+            img.src = `./assets/images/${bobo.getCor()}/${modo}.png`;
+            img.dataset.modo = modo;
+            img.addEventListener('click', () => {
+                this.jogoDeXadrez.setModoDoBobo(linha, coluna, modo);
+                popupElement.classList.add('hidden');
+                this.desenharTabuleiro(); // Redesenha para limpar o destaque
+                this.mostrarMovimentosValidos(linha, coluna); // Mostra os novos movimentos
+        
+                const novaCellSelecionada = this.rootElement.querySelector(`[data-row='${linha}'][data-col='${coluna}']`);
+                if (novaCellSelecionada) novaCellSelecionada.classList.add('selecionada');
+            });
+            popupContent.appendChild(img);
+        });
+        
+        popupElement.classList.remove('hidden');
+    }
+
+    mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna) {
+    const dialogoElement = document.getElementById('dialogo-ladrao');
+    const botaoSim = document.getElementById('botao-recuar-sim');
+    const botaoNao = document.getElementById('botao-recuar-nao');
+
+    if (!dialogoElement || !botaoSim || !botaoNao) return;
+
+    // Função para fechar e limpar os eventos
+    const fecharDialogo = () => {
+        dialogoElement.classList.add('hidden');
+        // Remove os listeners antigos para evitar múltiplos cliques no futuro
+        botaoSim.replaceWith(botaoSim.cloneNode(true));
+        botaoNao.replaceWith(botaoNao.cloneNode(true));
+    };
+
+    // Mostra o diálogo
+    dialogoElement.classList.remove('hidden');
+
+    // Ação do botão SIM
+    botaoSim.addEventListener('click', () => {
+        this.jogoDeXadrez.moverPeca(linha, coluna, linhaInicial, colunaInicial);
+        fecharDialogo();
+        this.trocarTurno(); // Troca o turno após a ação
+        this.desenharTabuleiro(); // Redesenha para mostrar o recuo
+    }, { once: true }); // { once: true } garante que o evento só dispare uma vez
+
+    // Ação do botão NÃO
+    botaoNao.addEventListener('click', () => {
+        fecharDialogo();
+        this.trocarTurno(); // Troca o turno após a ação
+    }, { once: true });
+}
+    
+
+   desenharTabuleiro() {
+    this.rootElement.innerHTML = '';
+    this.rootElement.style.display = 'grid';
+    this.rootElement.style.gridTemplateColumns = 'repeat(8, 1fr)';
+
+    const tabuleiroArray = this.jogoDeXadrez.getTabuleiro();
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell', (row + col) % 2 === 0 ? 'light' : 'dark');
+            cellElement.dataset.row = row;
+            cellElement.dataset.col = col;
+
+            const peca = tabuleiroArray[row][col];
+
+            // Se existe algo na casa, tentamos desenhar
+            if (peca) {
+                // O TRY...CATCH VAI CAPTURAR O ERRO
+                try {
                     const pecaImage = document.createElement('img');
+                    // A linha abaixo é a que estava dando o erro
                     pecaImage.src = `./assets/images/${peca.getCor()}/${peca.getNomePeca()}.png`;
                     cellElement.appendChild(pecaImage);
+                } catch (error) {
+                    // SE O ERRO ACONTECER, O CATCH É EXECUTADO
+                    console.error(`--- ERRO AO DESENHAR PEÇA ---`);
+                    console.error(`Posição do Erro: linha=${row}, coluna=${col}`);
+                    console.error(`Conteúdo da célula que causou o erro:`, peca);
+                    console.error(`Mensagem de erro original:`, error);
+                    
+                    // Para feedback visual, desenha um X vermelho na casa com problema
+                    cellElement.innerHTML = '<span style="color: red; font-size: 40px; font-weight: bold;">X</span>';
                 }
-                
-                cellElement.addEventListener('mousedown', (event) => this.handleCellClick(event));
-                this.rootElement.appendChild(cellElement);
             }
+            
+            cellElement.addEventListener('mousedown', (event) => this.handleCellClick(event));
+            this.rootElement.appendChild(cellElement);
         }
     }
+}
 
     mostrarMovimentosValidos(linhaOrigem, colunaOrigem) {
         const cells = Array.from(this.rootElement.children);
