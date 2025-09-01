@@ -11,7 +11,7 @@
   `Tools → Options → Java → Maven → Maven Home`  
 - Clique em **Run** (não use **Execute Maven → exec:j**
 
-(Enfrentamos problemas em rodar utilizando o netbeans, recomendamos fortemente para rodar a aplicação em java, utilizar o IntelliJ que enfrenta menos problemas com relação ao Maven e o Maven Wrapper)
+(Enfrentamos problemas em rodar utilizando o NetBeans, recomendamos fortemente para rodar a aplicação em java, utilizar o IntelliJ que enfrenta menos problemas com relação ao Maven e o Maven Wrapper)
 
 **IntelliJ:**  
 - `File → Open` → selecione a pasta  
