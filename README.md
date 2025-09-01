@@ -1,3 +1,25 @@
+# Xadrez 2 – Instruções de Execução
+
+## Java (NetBeans / IntelliJ)
+**Pré-requisito:** Java JDK 17+ e Maven.
+
+**NetBeans:**  
+- Clique com o botão direito no projeto → **Set as Main Project**  
+- Garanta que a **Main Class** é `org.example.vamo_ver.HelloApplication`  
+- Se o projeto tiver **Maven Wrapper** (`mvnw`), o NetBeans usa ele automaticamente  
+- Se não tiver, configure o Maven global:  
+  `Tools → Options → Java → Maven → Maven Home`  
+- Clique em **Run** (não use **Execute Maven → exec:j**
+
+(Enfrentamos problemas em rodar utilizando o netbeans, recomendamos fortemente para rodar a aplicação em java, utilizar o IntelliJ que enfrenta menos problemas com relação ao Maven e o Maven Wrapper)
+
+**IntelliJ:**  
+- `File → Open` → selecione a pasta  
+- Clique na classe `HelloApplication` → **Run**
+
+** Web **
+# Abra index.html presente na pasta ProjetoJS na raiz do repositório no navegador (Chrome, Edge ou Firefox)
+
 # ♟️ Xadrez 2
 
 ![Capa do Projeto](./images/capa.png)
