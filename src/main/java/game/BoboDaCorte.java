@@ -5,7 +5,7 @@ import java.util.List;
 
 public class BoboDaCorte extends Peca {
     private List<String> listaModosBobo;
-    private String modoAtual = "gklashgikasg";
+    private String modoAtual = "nenhumModoEspecifico";
 
     public BoboDaCorte(String cor) {
         super(cor);

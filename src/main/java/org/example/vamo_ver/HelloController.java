@@ -51,7 +51,7 @@ public class HelloController implements Initializable {
         pecasTransformarPretas.remove("BoboDaCorte");
         pecasTransformarBrancas.remove("BoboDaCorte");
         copiaPecasBobo.addAll(pecasTransformarBrancas);
-        todasPecasMenosReiPeao.addAll(pecasTransformarBrancas);
+        todasPecasMenosReiPeao = new ArrayList<>(pecasTransformarBrancas);
         todasPecasMenosReiPeao.remove("Peao");
         todasPecasMenosReiPeao.remove("Rei");
 
