@@ -73,11 +73,8 @@ export class GameController {
     else {
         const linhaInicial = parseInt(this.cellSelecionada.dataset.row);
         const colunaInicial = parseInt(this.cellSelecionada.dataset.col);
-
     
         if (this.isMovimentoLegal(linhaInicial, colunaInicial, linha, coluna)) {
-            
-            
             
             const pecaMovida = this.jogoDeXadrez.getPeca(linhaInicial, colunaInicial);
             const pecaNoDestino = this.jogoDeXadrez.getPeca(linha, coluna);
@@ -87,7 +84,31 @@ export class GameController {
             
          
             if (pecaMovida instanceof BoboDaCorte) {
+                    const bobo = pecaMovida;
+                const modoUsado = bobo.getModoAtual();
                 
+                // Se um modo válido foi usado (não "nulo")
+                if (modoUsado && modoUsado !== "nulo") {
+                    if (bobo.getCor() === "branco") {
+                        // Remove o modo da lista de brancas
+                        this.pecasDisponiveisBoboBranco = this.pecasDisponiveisBoboBranco.filter(m => m !== modoUsado);
+                        // Se a lista ficou vazia, reseta
+                        if (this.pecasDisponiveisBoboBranco.length === 0) {
+                            console.log("CICLO DO BOBO BRANCO COMPLETO! Resetando modos.");
+                            this.pecasDisponiveisBoboBranco = [...this.copiaPecasBobo];
+                        }
+                    } else { // Se for o bobo preto Remove o modo da lista de pretas
+                        this.pecasDisponiveisBoboPreto = this.pecasDisponiveisBoboPreto.filter(m => m !== modoUsado);
+                        // Se a lista ficou vazia, reseta
+                        if (this.pecasDisponiveisBoboPreto.length === 0) {
+                            console.log("CICLO DO BOBO PRETO COMPLETO! Resetando modos.");
+                            this.pecasDisponiveisBoboPreto = [...this.copiaPecasBobo];
+                        }
+                    }
+                }
+                
+                
+                bobo.setModo("nulo");              
             }
 
             
@@ -99,7 +120,7 @@ export class GameController {
             } else if (ehLadraoComCaptura) {
                 this.mostrarDialogoDoLadrao(linhaInicial, colunaInicial, linha, coluna);
             } else {
-                // Para todos os outros movimentos NORMAIS e LEGAIS, troca o turno.
+               
                 this.trocarTurno();
             }
 
@@ -289,10 +310,8 @@ export class GameController {
 
     if (!dialogoElement || !botaoSim || !botaoNao) return;
 
-    // Função para fechar e limpar os eventos
     const fecharDialogo = () => {
         dialogoElement.classList.add('hidden');
-        // Remove os listeners antigos para evitar múltiplos cliques no futuro
         botaoSim.replaceWith(botaoSim.cloneNode(true));
         botaoNao.replaceWith(botaoNao.cloneNode(true));
     };
@@ -300,7 +319,7 @@ export class GameController {
     // Mostra o diálogo
     dialogoElement.classList.remove('hidden');
 
-    // Ação do botão SIM
+    // Sim
     botaoSim.addEventListener('click', () => {
         this.jogoDeXadrez.moverPeca(linha, coluna, linhaInicial, colunaInicial);
         fecharDialogo();
@@ -308,7 +327,7 @@ export class GameController {
         this.desenharTabuleiro(); // Redesenha para mostrar o recuo
     }, { once: true }); // { once: true } garante que o evento só dispare uma vez
 
-    // Ação do botão NÃO
+    // Nao
     botaoNao.addEventListener('click', () => {
         fecharDialogo();
         this.trocarTurno(); // Troca o turno após a ação
@@ -331,7 +350,6 @@ export class GameController {
 
             const peca = tabuleiroArray[row][col];
 
-            // Se existe algo na casa, tentamos desenhar
             if (peca) {
                
                 try {
@@ -357,9 +375,9 @@ export class GameController {
 }
 
     mostrarMovimentosValidos(linhaOrigem, colunaOrigem) {
-    console.log(`--- Buscando movimentos para a peça em (${linhaOrigem}, ${colunaOrigem}) ---`);
+    console.log(`Buscando movimentos para a peça em (${linhaOrigem}, ${colunaOrigem})`);
     if (!this.pecaSelecionada) {
-        console.error("ERRO GRAVE: Tentou mostrar movimentos, mas nenhuma peça está selecionada.");
+        console.error("erro : Tentou mostrar movimentos, mas nenhuma peça está selecionada.");
         return;
     }
 
@@ -372,7 +390,7 @@ export class GameController {
         for (let j = 0; j < 8; j++) {
             // Chama a nossa função de validação completa
             if (this.isMovimentoLegal(linhaOrigem, colunaOrigem, i, j)) {
-                movimentosEncontrados++; // Encontrou um!
+                movimentosEncontrados++; // Achou
                 const index = i * 8 + j;
                 if (cells[index]) {
                     const indicador = document.createElement('div');

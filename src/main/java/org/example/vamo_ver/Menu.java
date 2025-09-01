@@ -1,18 +1,18 @@
 package org.example.vamo_ver;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class Menu implements Initializable {
 
@@ -41,8 +41,7 @@ public class Menu implements Initializable {
 
         } catch (Exception e) {
             System.err.println("Erro ao carregar a imagem de fundo: " + e.getMessage());
-            // Opcional: definir um fundo de cor sólida se a imagem falhar
-            // backgroundImage.setStyle("-fx-background-color: #333333;");
+          
         }
 
         Image logo = new Image(getClass().getResourceAsStream("/images/logoBobo.png"));

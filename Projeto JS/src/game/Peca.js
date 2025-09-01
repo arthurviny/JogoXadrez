@@ -8,7 +8,6 @@ export class Peca {
         return this.cor;
     }
 
-    // CORREÇÃO: Garanta que o nome do método está em camelCase correto.
     getNomePeca() {
         return this.nomePeca;
     }

@@ -38,18 +38,16 @@ public class Heroi extends Peca {
             int passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
             int passoColuna = (colunaFinal > colunaInicial) ? 1 : -1;
 
-            // Verifica a casa intermediária
             if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) != null) {
-                return false; // Caminho bloqueado, movimento inválido.
+                return false; 
             }
             return true;
         }
 
-        // --- MODO FÚRIA ---
+        // Furioso
         if (this.reiEstaEmCheck) {
             // Regra da Fúria: Pode mover 1 ou 2 casas, para frente ou para trás, reto ou na diagonal.
 
-            // 1. Verifica se a distância está correta (1 ou 2 casas na vertical).
             if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
                 return false;
             }
@@ -73,7 +71,7 @@ public class Heroi extends Peca {
                 return true;
             }
         }
-        // Se não se encaixar em nenhuma das regras, o movimento é inválido.
+        
         return false;
     }
 

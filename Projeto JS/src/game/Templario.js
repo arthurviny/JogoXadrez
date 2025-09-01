@@ -16,12 +16,12 @@ export class Templario extends Peca {
         const diffLinha = Math.abs(linhaInicial - linhaFinal);
         const diffColuna = Math.abs(colunaInicial - colunaFinal);
 
-        // --- REGRA 1: Movimento vertical de até 4 casas ---
+        // Anda pra frente de uma ate 4 caasas
         if (colunaInicial === colunaFinal && (diffLinha > 0 && diffLinha <= 4)) {
             const passo = (linhaFinal > linhaInicial) ? 1 : -1;
             for (let i = linhaInicial + passo; i !== linhaFinal; i += passo) {
                 if (tabuleiro.getPeca(i, colunaInicial) !== null) {
-                    return false; // Caminho bloqueado.
+                    return false; 
                 }
             }
             return true;
@@ -31,7 +31,6 @@ export class Templario extends Peca {
         if (diffLinha === 3 && diffColuna === 1) {
             const passoLinha = (linhaFinal > linhaInicial) ? 1 : -1;
 
-            // Verifica as duas casas no caminho vertical.
             if (tabuleiro.getPeca(linhaInicial + passoLinha, colunaInicial) !== null) {
                 return false;
             }
@@ -39,7 +38,7 @@ export class Templario extends Peca {
                 return false;
             }
 
-            return true; // Caminho livre, movimento válido.
+            return true; 
         }
 
         return false;

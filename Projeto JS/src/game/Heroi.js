@@ -13,7 +13,7 @@ export class Heroi extends Peca {
     }
 
    isMovimentoValido(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal) {
-        // Verificação padrão: não pode capturar peça da mesma cor.
+    
         let pecaDestino = tabuleiro.getPeca(linhaFinal, colunaFinal);
         if (pecaDestino !== null && pecaDestino.getCor() === this.getCor()) {
             return false;
@@ -63,14 +63,14 @@ export class Heroi extends Peca {
                 // Verifica a casa intermediária
                 while (linhaAtual < linhaFinal) {
                     if (tabuleiro.getPeca(linhaAtual, colunaInicial) !== null) {
-                        return false; // Caminho bloqueado, movimento inválido.
+                        return false; // Caminho bloqueado
                     }
                     linhaAtual += passoLinha;
                 }
                 return true;
             }
         }
-        // Se não se encaixar em nenhuma das regras, o movimento é inválido.
+      
         return false;
     }
 

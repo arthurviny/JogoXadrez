@@ -25,9 +25,6 @@ public class Rainha extends Peca {
             return false; // Se não for reto NEM diagonal, é inválido.
         }
 
-        // Regra 2: O caminho deve estar livre (a lógica é a mesma da Torre e do Bispo).
-
-        // Movimento Reto
         if (ehMovimentoReto) {
             // Movimento Vertical
             if (colunaInicial == colunaFinal) {
@@ -36,7 +33,7 @@ public class Rainha extends Peca {
                     if (tabuleiro.getPeca(i, colunaInicial) != null) return false;
                 }
             }
-            // Movimento Horizontal
+           
             else {
                 int passo = (colunaFinal > colunaInicial) ? 1 : -1;
                 for (int i = colunaInicial + passo; i != colunaFinal; i += passo) {

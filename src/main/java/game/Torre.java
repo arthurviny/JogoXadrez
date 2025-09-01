@@ -10,14 +10,12 @@ class Torre extends Peca {
     public boolean isMovimentoValido(Tabuleiro tabuleiro, int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
         Peca pecaDestino = tabuleiro.getPeca(linhaFinal, colunaFinal);
 
-        // Regra 1: Não pode capturar peça da mesma cor.
         if (pecaDestino != null && pecaDestino.getCor().equals(this.getCor())) {
             return false;
         }
 
-        // Regra 2: Movimento deve ser reto (na mesma linha ou mesma coluna).
         if (linhaInicial != linhaFinal && colunaInicial != colunaFinal) {
-            return false; // Se não for reto, é inválido.
+            return false; 
         }
 
         // Movimento Vertical
@@ -29,7 +27,7 @@ class Torre extends Peca {
                 }
             }
         }
-        // Movimento Horizontal
+
         else { // linhaInicial == linhaFinal
             int passo = (colunaFinal > colunaInicial) ? 1 : -1;
             for (int i = colunaInicial + passo; i != colunaFinal; i += passo) {
@@ -39,7 +37,7 @@ class Torre extends Peca {
             }
         }
 
-        return true; // Se passou por todas as regras, o movimento é válido.
+        return true;
     }
 
     @Override

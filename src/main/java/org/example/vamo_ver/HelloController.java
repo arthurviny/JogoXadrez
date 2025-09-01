@@ -1,10 +1,19 @@
 package org.example.vamo_ver;
 
-// Imports necessários
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 
-import game.*;
+import game.BoboDaCorte;
+import game.Ladrao;
+import game.Peao;
+import game.Peca;
+import game.Rei;
+import game.Tabuleiro;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -35,7 +44,7 @@ public class HelloController implements Initializable {
     List<String> pecasTransformarPretas = new ArrayList<>();
     List<String> pecasTransformarBrancas = new ArrayList<>();
 
-    // Usamos conjuntos para evitar duplicatas
+    // Uso de conjuntos para evitar duplicatas
     Set<String> pecasBoboImpedirCheckPretas = new HashSet<>();
     Set<String> pecasBoboImpedirCheckBrancas = new HashSet<>();
 
@@ -345,18 +354,18 @@ public class HelloController implements Initializable {
         }
     }
 
-    // --- MÉTODOS AUXILIARES DE LÓGICA DE JOGO ---
+    // Parte Logica do Xadrez
     private boolean isMovimentoLegal(int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
         if (pecaSelecionada == null) {
             return false;
         }
 
-        // Passo 1: Verifica se o movimento é geometricamente válido para a peça.
+        // Olha se a peça pode fazer o movimento
         if (!pecaSelecionada.isMovimentoValido(jogoDeXadrez, linhaInicial, colunaInicial, linhaFinal, colunaFinal)) {
             return false;
         }
 
-        // Passo 2: A LÓGICA DE SIMULAÇÃO FOI MOVIDA PARA CÁ (LUGAR CORRETO)
+        // Logica de Simulaçao
         Tabuleiro tabuleiroSimulado = jogoDeXadrez.clonar();
         tabuleiroSimulado.moverPeca(linhaInicial, colunaInicial, linhaFinal, colunaFinal);
 
@@ -498,7 +507,7 @@ public class HelloController implements Initializable {
         verificarFimDeJogo();
     }
 
-    // --- MÉTODOS DE UI E VISUAIS ---
+    // Parte Visual
 
     public void desenharTabuleiro() {
         tabuleiroGrid.getChildren().clear();
@@ -590,7 +599,6 @@ public class HelloController implements Initializable {
         alert.setHeaderText("O Ladrão capturou uma peça.");
         alert.setContentText("Deseja usar a habilidade para voltar à casa original?");
 
-        // Estiliza a caixa de diálogo, se o arquivo CSS existir
         try {
             DialogPane dialogPane = alert.getDialogPane();
             dialogPane.getStylesheets().add(

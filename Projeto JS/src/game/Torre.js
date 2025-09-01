@@ -6,7 +6,6 @@ export class Torre extends Peca {
         this.nomePeca = "Torre";
     }
     
-    // O método da instância simplesmente chama a ferramenta estática.
     isMovimentoValido(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal) {
         return Torre.checarMovimento(tabuleiro, linhaInicial, colunaInicial, linhaFinal, colunaFinal, this.getCor());
     }

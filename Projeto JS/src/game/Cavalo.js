@@ -16,7 +16,6 @@ export class Cavalo extends Peca {
             return false;
         }
 
-        // A lógica matemática e de booleanos é exatamente a mesma.
         const diffLinha = Math.abs(linhaFinal - linhaInicial);
         const diffColuna = Math.abs(colunaFinal - colunaInicial);
 
