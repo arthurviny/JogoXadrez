@@ -29,11 +29,17 @@ Chaturanga teria se espalhado pelo mundo árabe e posteriormente chegado à Euro
 
 Apesar disso, as regras, mecânicas e peças do jogo se mantiveram praticamente intocadas por séculos, não sendo percebidas modificações ou inovações que se destacassem a ponto de exigir uma mudança definitiva no jogo.
 
+Indicamos fortemente a leitura do README diretamente pelo GitHub (Link logo abaixo) visto que a formatação e as imagens que auxiliarão no entedimento geral do Relatório se encontram lá.
+
 ---
 
 ## 🔗 Repositório do GitHub
 
 https://github.com/arthurviny/JogoXadrez
+
+## Integrantes da Equipe 
+- Arthur Vinícius Costa Barreto
+- Bruno Lopes dos Santos
 
 ## ♟️ Tentativas de Inovação
 
