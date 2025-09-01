@@ -182,3 +182,9 @@ Coerção (Casting):
 - Em Java: O acesso é rigorosamente controlado pelas palavras-chave private, protected e public. É um pilar reforçado pela própria linguagem, garantindo que o estado interno dos objetos seja protegido.
 
 - Em JavaScript: Historicamente, a privacidade era mantida por convenção, usando um underscore (_) para sinalizar que uma propriedade não deveria ser acessada de fora. Versões modernas da linguagem introduziram propriedades verdadeiramente privadas com o uso do # (cerquilha), tornando o encapsulamento em JS muito mais próximo do que se vê em Java.
+
+## O que podemos tirar dessa comparação
+
+Em suma, a jornada de transpor o Xadrez 2 de Java para JavaScript é uma lição prática sobre as filosofias contrastantes dessas duas poderosas linguagens.
+
+  No ambiente Java, o desenvolvimento é guiado pela segurança e previsibilidade do compilador, que age como um assistente rigoroso, prevenindo erros de tipo e contrato antes que o jogo sequer seja executado. O resultado é uma aplicação robusta, uma verdadeira "fortaleza" de código onde cada peça tem seu lugar bem definido. Em contrapartida, o desenvolvimento em JavaScript oferece uma flexibilidade e velocidade maiores. A responsabilidade pela integridade dos dados e pela correta interação entre os objetos é transferida do compilador para o desenvolvedor, exigindo uma atenção maior aos testes e ao comportamento em tempo de execução. Podemos inferir que nenhuma abordagem é inerentemente superior. A escolha entre a fortaleza segura do Java e a flexibilidade do JavaScript depende inteiramente dos objetivos do projeto e do ambiente em que ele irá viver, seja em um aplicativo desktop contido ou na vastidão universal da web.
