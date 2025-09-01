@@ -17,8 +17,8 @@
 - `File → Open` → selecione a pasta  
 - Clique na classe `HelloApplication` → **Run**
 
-** Web **
-Abra index.html presente na pasta ProjetoJS na raiz do repositório no navegador (Chrome, Edge ou Firefox)
+**NetBeans:**
+- Abra index.html presente na pasta ProjetoJS na raiz do repositório no navegador (Chrome, Edge ou Firefox)
 
 # ♟️ Xadrez 2
 
