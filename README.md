@@ -9,6 +9,10 @@ Apesar disso, as regras, mecânicas e peças do jogo se mantiveram praticamente 
 
 ---
 
+## 🔗 Repositório do GitHub
+
+https://github.com/arthurviny/JogoXadrez
+
 ## ♟️ Tentativas de Inovação
 
 Algumas tentativas de mudança chegaram a acontecer. Entre elas, uma das mais populares foi o **Chess960**, variação do xadrez tradicional inventada por *Bobby Fischer*, renomado enxadrista.  
